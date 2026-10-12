@@ -25,8 +25,7 @@
     height: 100%; overflow: hidden; position: fixed; width: 100%;
     overscroll-behavior: none;
   }
-  #app { display: none; flex-direction: column; height: 100vh; height: 100dvh; max-width: 480px; margin: 0 auto; padding-top: env(safe-area-inset-top); }
-  #app.active { display: flex; }
+  #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; max-width: 480px; margin: 0 auto; padding-top: env(safe-area-inset-top); }
 
   .app-header { padding: 14px 20px 10px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
   .app-header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
@@ -39,22 +38,7 @@
 
   .app-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px 140px; overscroll-behavior: contain; }
 
-  #login { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; height: 100dvh; padding: 20px; gap: 20px; }
-  #login.hidden { display: none; }
-  .login-icon { font-size: 56px; }
-  .login-title { font-size: 24px; font-weight: 700; }
-  .login-sub { font-size: 13px; color: var(--muted); }
-  .pin-display { display: flex; gap: 14px; margin: 10px 0; }
-  .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); transition: all 0.15s; }
-  .pin-dot.filled { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
-  .pin-dot.err { background: var(--red); border-color: var(--red); animation: shake 0.3s; }
-  @keyframes shake { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-8px) } 75% { transform: translateX(8px) } }
-  .keypad { display: grid; grid-template-columns: repeat(3, 72px); gap: 14px; }
-  .keypad button { width: 72px; height: 72px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 26px; font-weight: 500; font-family: inherit; cursor: pointer; transition: all 0.1s; user-select: none; }
-  .keypad button:active { background: var(--accent); border-color: var(--accent); transform: scale(0.92); }
-  .keypad button.empty { background: transparent; border: none; pointer-events: none; }
-  .keypad button.backspace { background: transparent; border: none; font-size: 22px; }
-
+  /* Balance */
   .balance-card { background: linear-gradient(135deg, #1f1f28, #18181f); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 12px; position: relative; overflow: hidden; }
   .balance-card::after { content: ''; position: absolute; top: -50%; right: -30%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(94,92,230,0.15), transparent 70%); pointer-events: none; }
   .balance-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
@@ -62,16 +46,30 @@
   .balance-value.neg { color: var(--red); }
   .balance-value.pos { color: var(--green); }
 
-  .stock-summary { background: linear-gradient(135deg, rgba(100,210,255,0.08), rgba(100,210,255,0.02)); border: 1px solid rgba(100,210,255,0.2); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; cursor: pointer; transition: transform 0.1s; }
+  /* Stock summary (только пластик) */
+  .stock-summary {
+    background: linear-gradient(135deg, rgba(100,210,255,0.08), rgba(100,210,255,0.02));
+    border: 1px solid rgba(100,210,255,0.2); border-radius: 16px;
+    padding: 14px 16px; margin-bottom: 12px; cursor: pointer;
+    transition: transform 0.1s;
+  }
   .stock-summary:active { transform: scale(0.98); }
-  .stock-summary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .stock-summary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .stock-summary-title { font-size: 12px; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.8px; }
   .stock-summary-hint { font-size: 10px; color: var(--muted); }
-  .stock-items { display: flex; flex-wrap: wrap; gap: 6px 10px; }
-  .stock-item { font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; padding: 3px 8px; background: rgba(100,210,255,0.08); border-radius: 8px; }
-  .stock-item.neg { color: var(--red); background: rgba(255,69,58,0.08); }
-  .stock-item.zero { opacity: 0.4; }
-  .stock-empty { font-size: 12px; color: var(--muted); font-style: italic; }
+  .stock-plastic-value {
+    font-size: 26px; font-weight: 700; color: var(--cyan);
+    font-variant-numeric: tabular-nums; margin-bottom: 4px;
+  }
+  .stock-plastic-value.neg { color: var(--red); }
+  .stock-waste-line {
+    font-size: 11px; color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+    padding-top: 6px; margin-top: 6px;
+    border-top: 1px dashed rgba(100,210,255,0.15);
+  }
+  .stock-waste-line .waste-val { color: var(--warn); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stock-waste-line .waste-val.zero { color: var(--muted); }
 
   .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
   .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
@@ -81,6 +79,7 @@
   .dot.r { background: var(--red); }
   .stat-value { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
 
+  /* Chart */
   .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
   .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
   .chart-subtitle { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
@@ -95,18 +94,20 @@
   .section-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin: 4px 4px 10px; display: flex; justify-content: space-between; align-items: center; }
   .section-title button { background: none; border: none; color: var(--accent); font-size: 12px; font-family: inherit; cursor: pointer; text-transform: none; letter-spacing: 0; }
 
+  /* Transactions */
   .tx-list { display: flex; flex-direction: column; gap: 6px; }
-  .tx-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; animation: slideIn 0.2s ease; }
+  .tx-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; animation: slideIn 0.2s ease; }
   @keyframes slideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-  .tx-left { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-  .tx-note { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tx-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .tx-note { font-size: 14px; font-weight: 500; }
   .tx-date { font-size: 11px; color: var(--muted); }
+  .tx-pos { font-size: 11px; color: var(--cyan); font-variant-numeric: tabular-nums; }
+  .tx-pos.muted { color: var(--muted); }
   .tx-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .tx-amount-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
   .tx-amount { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .tx-amount.income { color: var(--green); }
   .tx-amount.expense { color: var(--red); }
-  .tx-weight { font-size: 10px; color: var(--cyan); font-variant-numeric: tabular-nums; }
   .tx-del { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 2px; line-height: 1; }
   .tx-del:active { color: var(--red); }
 
@@ -118,6 +119,7 @@
   .btn-buy { background: var(--red); }
   .btn-sell { background: var(--green); }
 
+  /* Modal */
   .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
   .modal-bg.active { display: flex; }
   .modal { background: var(--card-2); width: 100%; max-width: 480px; border-radius: 24px 24px 0 0; padding: 20px 18px calc(env(safe-area-inset-bottom) + 20px); animation: sheetUp 0.25s ease; border-top: 1px solid var(--border); max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -150,26 +152,96 @@
   .btn-save.income { background: var(--green); }
   .btn-save.expense { background: var(--red); }
 
-  .tmpl-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; max-height: 220px; overflow-y: auto; }
-  .tmpl-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
+  /* Multi-row modal (Продал) */
+  .multi-row {
+    display: grid;
+    grid-template-columns: 1fr 70px 90px 32px;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .multi-row input {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 8px;
+    font-size: 14px; color: var(--text); font-family: inherit;
+    outline: none; min-width: 0; width: 100%;
+  }
+  .multi-row input:focus { border-color: var(--accent); }
+  .multi-row input[type="number"] { text-align: right; font-variant-numeric: tabular-nums; }
+  .multi-row .row-del {
+    background: none; border: none; color: var(--muted);
+    font-size: 20px; cursor: pointer; padding: 0; line-height: 1;
+  }
+  .multi-row .row-del:active { color: var(--red); }
+  .multi-header {
+    display: grid;
+    grid-template-columns: 1fr 70px 90px 32px;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 2px;
+    margin-bottom: 6px;
+  }
+  .multi-header span:nth-child(2),
+  .multi-header span:nth-child(3) { text-align: right; }
+  .add-row-btn {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: transparent;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    color: var(--accent);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .add-row-btn:active { background: var(--bg); }
+  .multi-total {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--muted);
+    padding: 8px 4px 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  .multi-total b { color: var(--green); font-variant-numeric: tabular-nums; }
+
+  /* Templates editor */
+  .tmpl-section-title {
+    font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin: 12px 4px 8px;
+  }
+  .tmpl-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; max-height: 180px; overflow-y: auto; }
+  .tmpl-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
   .tmpl-info { display: flex; flex-direction: column; gap: 2px; }
   .tmpl-name { font-size: 14px; font-weight: 500; }
   .tmpl-unit { font-size: 11px; color: var(--muted); }
   .tmpl-del { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 4px; }
   .tmpl-del:active { color: var(--red); }
-  .tmpl-add-row { display: flex; gap: 6px; margin-bottom: 12px; }
-  .tmpl-add-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; }
+  .tmpl-add-row { display: flex; gap: 6px; margin-bottom: 8px; }
+  .tmpl-add-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; }
   .tmpl-add-row input:focus { border-color: var(--accent); }
-  .tmpl-add-row select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; }
+  .tmpl-add-row select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; }
   .tmpl-add-row button { background: var(--accent); border: none; border-radius: 10px; padding: 0 16px; color: white; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; }
 
-  .stock-edit-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-  .stock-edit-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+  /* Stock editor */
+  .stock-edit-row { display: flex; align-items: center; gap: 10px; padding: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; }
   .stock-edit-row .name { flex: 1; font-size: 14px; font-weight: 500; }
   .stock-edit-row input { width: 100px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; text-align: right; font-variant-numeric: tabular-nums; }
   .stock-edit-row input:focus { border-color: var(--accent); }
   .stock-edit-row .unit { font-size: 12px; color: var(--muted); min-width: 28px; }
   .stock-edit-row .diff { font-size: 11px; color: var(--warn); min-width: 50px; text-align: right; }
+
+  .stock-help {
+    font-size: 11px; color: var(--muted);
+    line-height: 1.5; padding: 10px 12px;
+    background: rgba(100,210,255,0.05);
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
 
   .toast { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 90px); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 300; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -189,26 +261,6 @@
   <div>Загрузка…</div>
 </div>
 
-<!-- LOGIN -->
-<div id="login">
-  <div class="login-icon">🖨️</div>
-  <div class="login-title">Учёт печати</div>
-  <div class="login-sub">Введите код доступа</div>
-  <div class="pin-display" id="pinDisplay">
-    <div class="pin-dot"></div>
-    <div class="pin-dot"></div>
-    <div class="pin-dot"></div>
-    <div class="pin-dot"></div>
-  </div>
-  <div class="keypad" id="keypad">
-    <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
-    <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
-    <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
-    <button class="empty"></button><button data-k="0">0</button><button class="backspace" data-k="back">⌫</button>
-  </div>
-</div>
-
-<!-- APP -->
 <div id="app">
   <div class="app-header">
     <h1>Учёт печати</h1>
@@ -226,10 +278,14 @@
 
     <div class="stock-summary" id="stockSummary">
       <div class="stock-summary-header">
-        <div class="stock-summary-title">📦 Сырьё на складе</div>
+        <div class="stock-summary-title">📦 Пластик на складе</div>
         <div class="stock-summary-hint">нажми, чтобы изменить</div>
       </div>
-      <div class="stock-items" id="stockItems"></div>
+      <div class="stock-plastic-value" id="stockPlastic">0 кг</div>
+      <div class="stock-waste-line">
+        <span>🗑 Брак / отходы:</span>
+        <span class="waste-val" id="stockWaste">0 кг</span>
+      </div>
     </div>
 
     <div class="stats-row">
@@ -266,69 +322,129 @@
   </div>
 </div>
 
-<!-- MODAL: add transaction -->
-<div class="modal-bg" id="modalBg">
+<!-- MODAL: Купил -->
+<div class="modal-bg" id="buyBg">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h2 id="modalTitle">Купил</h2>
+    <h2>Купил</h2>
 
     <div class="field-label"><span>Что</span></div>
-    <div class="quick-templates" id="quickTemplates"></div>
+    <div class="quick-templates" id="buyTemplates"></div>
 
-    <div id="customNameWrap" style="display:none">
-      <input type="text" id="noteInput" placeholder="Название" autocomplete="off" />
+    <div id="buyCustomNameWrap" style="display:none">
+      <input type="text" id="buyNoteInput" placeholder="Название" autocomplete="off" />
     </div>
 
     <div class="field-label"><span>Количество</span></div>
     <div class="input-with-unit">
-      <input type="number" id="weightInput" placeholder="0" inputmode="decimal" step="0.01" autocomplete="off" />
-      <span class="unit" id="weightUnit">кг</span>
+      <input type="number" id="buyWeightInput" placeholder="0" inputmode="decimal" step="0.01" autocomplete="off" />
+      <span class="unit" id="buyWeightUnit">кг</span>
     </div>
 
     <div class="field-label"><span>Сумма</span></div>
     <div class="input-with-unit">
-      <input type="number" id="amountInput" placeholder="0" inputmode="decimal" step="0.01" autocomplete="off" />
+      <input type="number" id="buyAmountInput" placeholder="0" inputmode="decimal" step="0.01" autocomplete="off" />
       <span class="unit">₽</span>
     </div>
 
-    <div class="quick-hint" id="quickHint"></div>
+    <div class="quick-hint" id="buyHint"></div>
 
     <div class="modal-actions">
-      <button class="btn-cancel" id="cancelTxBtn">Отмена</button>
-      <button class="btn-save" id="saveBtn">Добавить</button>
+      <button class="btn-cancel" id="cancelBuyBtn">Отмена</button>
+      <button class="btn-save expense" id="saveBuyBtn">Добавить покупку</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: templates -->
+<!-- MODAL: Продал (мультистрочный) -->
+<div class="modal-bg" id="sellBg">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>Продал</h2>
+
+    <div class="field-label">
+      <span>Позиции</span>
+      <button type="button" id="quickFillSell" style="background:none;border:none;color:var(--accent);font-size:11px;cursor:pointer;padding:0;">шаблоны ↓</button>
+    </div>
+    <div class="quick-templates" id="sellTemplates"></div>
+
+    <div class="multi-header">
+      <span>Название</span>
+      <span>Кол-во</span>
+      <span>Цена ₽</span>
+      <span></span>
+    </div>
+    <div id="sellRows"></div>
+
+    <button class="add-row-btn" id="addSellRow">+ Добавить позицию</button>
+
+    <div class="multi-total">
+      <span>Итого:</span>
+      <b id="sellTotal">0 ₽</b>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelSellBtn">Отмена</button>
+      <button class="btn-save income" id="saveSellBtn">Добавить продажу</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Templates -->
 <div class="modal-bg" id="tmplBg">
   <div class="modal">
     <div class="modal-handle"></div>
     <h2>Шаблоны</h2>
-    <div class="tmpl-list" id="tmplList"></div>
-    <div class="field-label"><span>Добавить новый</span></div>
+
+    <div class="tmpl-section-title">🛒 Для «Купил» (сырьё)</div>
+    <div class="tmpl-list" id="buyTmplList"></div>
     <div class="tmpl-add-row">
-      <input type="text" id="newTmplName" placeholder="Название" autocomplete="off" />
-      <select id="newTmplUnit">
+      <input type="text" id="newBuyTmplName" placeholder="Название" autocomplete="off" />
+      <select id="newBuyTmplUnit">
         <option value="кг">кг</option>
         <option value="г">г</option>
         <option value="шт">шт</option>
       </select>
-      <button id="addTmplBtn">+</button>
+      <button id="addBuyTmplBtn">+</button>
     </div>
+
+    <div class="tmpl-section-title">🛍 Для «Продал» (товары)</div>
+    <div class="tmpl-list" id="sellTmplList"></div>
+    <div class="tmpl-add-row">
+      <input type="text" id="newSellTmplName" placeholder="Название" autocomplete="off" />
+      <button id="addSellTmplBtn">+</button>
+    </div>
+
     <div class="modal-actions">
       <button class="btn-cancel" id="closeTmplBtn">Готово</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: stock -->
+<!-- MODAL: Stock (только пластик) -->
 <div class="modal-bg" id="stockBg">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h2>Фактический склад</h2>
-    <div class="field-label"><span>Укажи реальное количество — разница уйдёт в брак</span></div>
-    <div class="stock-edit-list" id="stockEditList"></div>
+    <h2>Пластик на складе</h2>
+
+    <div class="stock-help">
+      Укажи фактическое количество пластика на складе.<br>
+      Разница с системным уйдёт в <b style="color:var(--warn)">брак / отходы</b> и будет показана отдельно.
+    </div>
+
+    <div class="stock-edit-row">
+      <div class="name">Пластик</div>
+      <div class="diff" id="stockDiff"></div>
+      <input type="number" step="0.01" inputmode="decimal" id="stockInput" value="0" />
+      <span class="unit">кг</span>
+    </div>
+
+    <div class="stock-edit-row" style="background:rgba(255,159,10,0.05);border-color:rgba(255,159,10,0.2);">
+      <div class="name" style="color:var(--warn)">🗑 Брак / отходы (накоплено)</div>
+      <input type="number" step="0.01" inputmode="decimal" id="wasteInput" value="0" />
+      <span class="unit">кг</span>
+    </div>
+
     <div class="modal-actions">
       <button class="btn-cancel" id="cancelStockBtn">Отмена</button>
       <button class="btn-save" id="applyStockBtn">Применить</button>
@@ -338,11 +454,9 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase compat SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-<!-- MAIN SCRIPT -->
 <script>
 (function () {
   'use strict';
@@ -360,24 +474,32 @@
 
   var PROFILE = 'Aynaz';
   var BASE = 'users/' + PROFILE;
-  var PIN = '7939';
-  var LS_SESSION = 'uchet_session';
-  var LS_TMPL = 'uchet_templates';
+  var LS_BUY_TMPL = 'uchet_buy_templates';
+  var LS_SELL_TMPL = 'uchet_sell_templates';
 
   /* ============ State ============ */
   var db = null;
-  var transactions = [];
-  var stockFixes = {};
-  var templates = [];
-  var modalType = 'buy';
-  var selectedTemplate = null;
-  var pinBuffer = '';
+  var transactions = [];      // все операции
+  var stockMeta = {           // { plasticStock, waste }
+    plasticStock: null,
+    waste: 0
+  };
+  var buyTemplates = [];
+  var sellTemplates = [];
+  var selectedBuyTmpl = null;
 
-  var DEFAULT_TEMPLATES = [
-    { id: 't_plastic', name: 'Пластик', unit: 'кг' },
-    { id: 't_glue',    name: 'Клей',    unit: 'г'  },
-    { id: 't_magnet',  name: 'Магниты', unit: 'шт' },
-    { id: 't_other',   name: 'Другое',  unit: 'кг' }
+  var DEFAULT_BUY_TMPL = [
+    { id: 'b_plastic', name: 'Пластик', unit: 'кг' },
+    { id: 'b_glue',    name: 'Клей',    unit: 'г'  },
+    { id: 'b_magnet',  name: 'Магниты', unit: 'шт' },
+    { id: 'b_other',   name: 'Другое',  unit: 'кг' }
+  ];
+
+  var DEFAULT_SELL_TMPL = [
+    { id: 's_magnit',  name: 'Магнитик' },
+    { id: 's_kachalka', name: 'Качалка' },
+    { id: 's_podstavka', name: 'Подставка для канцелярии' },
+    { id: 's_other',   name: 'Другое' }
   ];
 
   /* ============ Helpers ============ */
@@ -386,6 +508,12 @@
   function fmtMoney(n) {
     var abs = Math.abs(n);
     return abs.toLocaleString('ru-RU', { maximumFractionDigits: 0 }) + ' ₽';
+  }
+
+  function fmtWeight(n) {
+    var abs = Math.abs(n);
+    if (abs >= 1000) return (abs / 1000).toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' т';
+    return abs.toLocaleString('ru-RU', { maximumFractionDigits: 1 }) + ' кг';
   }
 
   function fmtAmount(n, unit) {
@@ -422,61 +550,83 @@
     $('syncText').textContent = text;
   }
 
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+
   /* ============ Templates ============ */
   function loadTemplates() {
     try {
-      var raw = localStorage.getItem(LS_TMPL);
-      if (raw) { templates = JSON.parse(raw); return; }
-    } catch (e) {}
-    templates = DEFAULT_TEMPLATES.slice();
+      var rawB = localStorage.getItem(LS_BUY_TMPL);
+      if (rawB) buyTemplates = JSON.parse(rawB);
+      else buyTemplates = DEFAULT_BUY_TMPL.slice();
+    } catch (e) { buyTemplates = DEFAULT_BUY_TMPL.slice(); }
+
+    try {
+      var rawS = localStorage.getItem(LS_SELL_TMPL);
+      if (rawS) sellTemplates = JSON.parse(rawS);
+      else sellTemplates = DEFAULT_SELL_TMPL.slice();
+    } catch (e) { sellTemplates = DEFAULT_SELL_TMPL.slice(); }
+
     saveTemplates();
   }
 
   function saveTemplates() {
-    try { localStorage.setItem(LS_TMPL, JSON.stringify(templates)); } catch (e) {}
+    try { localStorage.setItem(LS_BUY_TMPL, JSON.stringify(buyTemplates)); } catch (e) {}
+    try { localStorage.setItem(LS_SELL_TMPL, JSON.stringify(sellTemplates)); } catch (e) {}
   }
 
-  function addTemplate() {
-    var name = $('newTmplName').value.trim();
-    var unit = $('newTmplUnit').value;
+  function addBuyTemplate() {
+    var name = $('newBuyTmplName').value.trim();
+    var unit = $('newBuyTmplUnit').value;
     if (!name) { toast('Введите название', 'err'); return; }
-    templates.push({ id: 't_' + Date.now().toString(36), name: name, unit: unit });
+    buyTemplates.push({ id: 'b_' + uid(), name: name, unit: unit });
     saveTemplates();
-    $('newTmplName').value = '';
+    $('newBuyTmplName').value = '';
     renderTemplatesEditor();
     toast('Шаблон добавлен', 'ok');
   }
 
-  function deleteTemplate(id) {
-    templates = templates.filter(function (t) { return t.id !== id; });
+  function addSellTemplate() {
+    var name = $('newSellTmplName').value.trim();
+    if (!name) { toast('Введите название', 'err'); return; }
+    sellTemplates.push({ id: 's_' + uid(), name: name });
+    saveTemplates();
+    $('newSellTmplName').value = '';
+    renderTemplatesEditor();
+    toast('Шаблон добавлен', 'ok');
+  }
+
+  function deleteBuyTemplate(id) {
+    buyTemplates = buyTemplates.filter(function (t) { return t.id !== id; });
     saveTemplates();
     renderTemplatesEditor();
   }
 
-  /* ============ Stock ============ */
-  function getStockByTemplate() {
-    var stock = {};
-    templates.forEach(function (t) {
-      stock[t.id] = { name: t.name, unit: t.unit, qty: 0 };
-    });
+  function deleteSellTemplate(id) {
+    sellTemplates = sellTemplates.filter(function (t) { return t.id !== id; });
+    saveTemplates();
+    renderTemplatesEditor();
+  }
 
-    transactions.forEach(function (tx) {
-      var key = tx.templateId || 'unknown';
-      if (!stock[key]) {
-        stock[key] = { name: tx.templateName || 'Прочее', unit: tx.unit || 'шт', qty: 0 };
-      }
-      var delta = tx.type === 'buy' ? tx.amount_qty : -tx.amount_qty;
-      stock[key].qty += delta;
-    });
-
-    Object.keys(stockFixes).forEach(function (k) {
-      if (stock[k]) {
-        stock[k].fixDelta = stockFixes[k] - stock[k].qty;
-        stock[k].actual = stockFixes[k];
+  /* ============ Plastic stock ============ */
+  // Только для пластика: купил += кг, брак вычитается (вручную)
+  function getPlasticStock() {
+    if (stockMeta.plasticStock !== null && stockMeta.plasticStock !== undefined) {
+      return stockMeta.plasticStock;
+    }
+    // Автоматически: считаем из операций покупки «Пластик» в кг
+    var total = 0;
+    transactions.forEach(function (t) {
+      if (t.type === 'buy' && t.templateId === 'b_plastic' && t.unit === 'кг') {
+        total += t.amount_qty;
       }
     });
+    return total;
+  }
 
-    return stock;
+  function getWaste() {
+    return stockMeta.waste || 0;
   }
 
   /* ============ Chart ============ */
@@ -579,22 +729,17 @@
     $('totalIncome').textContent = fmtMoney(totalIncome);
     $('totalExpense').textContent = fmtMoney(totalExpense);
 
-    // Stock
-    var stock = getStockByTemplate();
-    var container = $('stockItems');
-    var keys = Object.keys(stock);
-    var visible = keys.filter(function (k) { return stock[k].qty !== 0 || stock[k].actual !== undefined; });
-    if (!visible.length) {
-      container.innerHTML = '<div class="stock-empty">пусто</div>';
-    } else {
-      container.innerHTML = visible.map(function (k) {
-        var e = stock[k];
-        var qty = e.actual !== undefined ? e.actual : e.qty;
-        var cls = qty < 0 ? 'neg' : qty === 0 ? 'zero' : '';
-        var fixMark = e.fixDelta ? ' (' + (e.fixDelta > 0 ? '+' : '') + fmtAmount(e.fixDelta, e.unit) + ' брак)' : '';
-        return '<div class="stock-item ' + cls + '">' + escapeHtml(e.name) + ': ' + fmtAmount(qty, e.unit) + fixMark + '</div>';
-      }).join('');
-    }
+    // Пластик на складе
+    var plastic = getPlasticStock();
+    var plasticEl = $('stockPlastic');
+    plasticEl.textContent = (plastic < 0 ? '−' : '') + fmtWeight(plastic);
+    plasticEl.className = 'stock-plastic-value' + (plastic < 0 ? ' neg' : '');
+
+    // Брак
+    var waste = getWaste();
+    var wasteEl = $('stockWaste');
+    wasteEl.textContent = waste > 0 ? fmtWeight(waste) : '—';
+    wasteEl.className = 'waste-val' + (waste > 0 ? '' : ' zero');
 
     renderChart();
     renderList();
@@ -611,16 +756,25 @@
       var d = new Date(t.createdAt);
       var dateStr = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
       var sign = t.type === 'sell' ? '+' : '−';
-      var wSign = t.type === 'sell' ? '−' : '+';
+
+      var posLines = '';
+      if (t.type === 'sell' && t.items && t.items.length) {
+        posLines = t.items.map(function (it) {
+          return escapeHtml(it.name) + ' · ' + it.qty + ' × ' + it.price + ' ₽';
+        }).join('<br>');
+      } else if (t.amount_qty) {
+        posLines = escapeHtml(t.templateName || '') + ' · ' + fmtAmount(t.amount_qty, t.unit);
+      }
+
       return '<div class="tx-item">' +
         '<div class="tx-left">' +
-          '<div class="tx-note">' + escapeHtml(t.templateName || 'Операция') + '</div>' +
-          '<div class="tx-date">' + dateStr + ' · ' + wSign + fmtAmount(t.amount_qty, t.unit) + '</div>' +
+          '<div class="tx-note">' + (t.type === 'sell' ? 'Продажа' : escapeHtml(t.templateName || 'Покупка')) + '</div>' +
+          (posLines ? '<div class="tx-pos">' + posLines + '</div>' : '') +
+          '<div class="tx-date">' + dateStr + '</div>' +
         '</div>' +
         '<div class="tx-right">' +
           '<div class="tx-amount-wrap">' +
             '<div class="tx-amount ' + (t.type === 'sell' ? 'income' : 'expense') + '">' + sign + fmtMoney(t.sum) + '</div>' +
-            '<div class="tx-weight">' + (t.amount_qty > 0 ? (t.sum / t.amount_qty).toFixed(1) + ' ₽/' + t.unit : '') + '</div>' +
           '</div>' +
           '<button class="tx-del" data-id="' + t.id + '">×</button>' +
         '</div>' +
@@ -633,33 +787,27 @@
     }
   }
 
-  /* ============ Modal: add transaction ============ */
-  function openModal(type) {
-    modalType = type;
-    selectedTemplate = null;
+  /* ============ Modal: Купил ============ */
+  function openBuyModal() {
+    selectedBuyTmpl = null;
 
-    $('modalTitle').textContent = type === 'buy' ? 'Купил' : 'Продал';
-    var saveBtn = $('saveBtn');
-    saveBtn.textContent = type === 'buy' ? 'Добавить покупку' : 'Добавить продажу';
-    saveBtn.className = 'btn-save ' + (type === 'buy' ? 'expense' : 'income');
+    $('buyNoteInput').value = '';
+    $('buyWeightInput').value = '';
+    $('buyAmountInput').value = '';
+    $('buyWeightUnit').textContent = 'кг';
+    $('buyCustomNameWrap').style.display = 'none';
+    $('buyHint').innerHTML = '';
 
-    $('noteInput').value = '';
-    $('weightInput').value = '';
-    $('amountInput').value = '';
-    $('weightUnit').textContent = 'кг';
-    $('customNameWrap').style.display = 'none';
-    $('quickHint').innerHTML = '';
-
-    renderQuickTemplates();
-    $('modalBg').classList.add('active');
+    renderBuyTemplates();
+    $('buyBg').classList.add('active');
   }
 
-  function renderQuickTemplates() {
-    var c = $('quickTemplates');
+  function renderBuyTemplates() {
+    var c = $('buyTemplates');
     var html = '';
-    for (var i = 0; i < templates.length; i++) {
-      var t = templates[i];
-      var sel = selectedTemplate && selectedTemplate.id === t.id ? ' selected' : '';
+    for (var i = 0; i < buyTemplates.length; i++) {
+      var t = buyTemplates[i];
+      var sel = selectedBuyTmpl && selectedBuyTmpl.id === t.id ? ' selected' : '';
       html += '<button class="qt-btn' + sel + '" data-id="' + t.id + '">' + escapeHtml(t.name) + ' · ' + t.unit + '</button>';
     }
     html += '<button class="qt-btn" data-id="__custom">Другое…</button>';
@@ -670,75 +818,69 @@
       btns[j].addEventListener('click', function () {
         var id = this.dataset.id;
         if (id === '__custom') {
-          selectedTemplate = { id: null, name: '', unit: 'кг' };
-          $('customNameWrap').style.display = 'block';
-          $('weightUnit').textContent = 'кг';
+          selectedBuyTmpl = { id: null, name: '', unit: 'кг' };
+          $('buyCustomNameWrap').style.display = 'block';
+          $('buyWeightUnit').textContent = 'кг';
         } else {
-          for (var k = 0; k < templates.length; k++) {
-            if (templates[k].id === id) { selectedTemplate = templates[k]; break; }
+          for (var k = 0; k < buyTemplates.length; k++) {
+            if (buyTemplates[k].id === id) { selectedBuyTmpl = buyTemplates[k]; break; }
           }
-          $('customNameWrap').style.display = 'none';
-          $('weightUnit').textContent = selectedTemplate.unit;
+          $('buyCustomNameWrap').style.display = 'none';
+          $('buyWeightUnit').textContent = selectedBuyTmpl.unit;
         }
-        renderQuickTemplates();
-        updateQuickHint();
+        renderBuyTemplates();
+        updateBuyHint();
       });
     }
 
-    if (!selectedTemplate && templates.length) {
-      selectedTemplate = templates[0];
-      $('weightUnit').textContent = selectedTemplate.unit;
-      // перерисовать с выделением
+    if (!selectedBuyTmpl && buyTemplates.length) {
+      selectedBuyTmpl = buyTemplates[0];
+      $('buyWeightUnit').textContent = selectedBuyTmpl.unit;
       var btns2 = c.querySelectorAll('.qt-btn');
       for (var m = 0; m < btns2.length; m++) {
-        if (btns2[m].dataset.id === selectedTemplate.id) btns2[m].classList.add('selected');
+        if (btns2[m].dataset.id === selectedBuyTmpl.id) btns2[m].classList.add('selected');
       }
     }
   }
 
-  function updateQuickHint() {
-    var q = parseFloat($('weightInput').value.replace(',', '.'));
-    var a = parseFloat($('amountInput').value.replace(',', '.'));
-    var hint = $('quickHint');
+  function updateBuyHint() {
+    var q = parseFloat($('buyWeightInput').value.replace(',', '.'));
+    var a = parseFloat($('buyAmountInput').value.replace(',', '.'));
+    var hint = $('buyHint');
     if (q > 0 && a > 0) {
-      var unit = selectedTemplate ? selectedTemplate.unit : 'кг';
+      var unit = selectedBuyTmpl ? selectedBuyTmpl.unit : 'кг';
       hint.innerHTML = 'Цена: <b>' + (a / q).toFixed(2) + ' ₽/' + unit + '</b>';
     } else {
       hint.innerHTML = '';
     }
   }
 
-  function closeModal(id) {
-    $(id).classList.remove('active');
-  }
-
-  function saveTx() {
-    var q = parseFloat($('weightInput').value.replace(',', '.'));
-    var s = parseFloat($('amountInput').value.replace(',', '.'));
-    if (!q || q <= 0) { $('weightInput').focus(); toast('Введите количество', 'err'); return; }
-    if (!s || s <= 0) { $('amountInput').focus(); toast('Введите сумму', 'err'); return; }
+  function saveBuy() {
+    var q = parseFloat($('buyWeightInput').value.replace(',', '.'));
+    var s = parseFloat($('buyAmountInput').value.replace(',', '.'));
+    if (!q || q <= 0) { $('buyWeightInput').focus(); toast('Введите количество', 'err'); return; }
+    if (!s || s <= 0) { $('buyAmountInput').focus(); toast('Введите сумму', 'err'); return; }
 
     var tmplId, tmplName, unit;
-    if (selectedTemplate && selectedTemplate.id) {
-      tmplId = selectedTemplate.id;
-      tmplName = selectedTemplate.name;
-      unit = selectedTemplate.unit;
+    if (selectedBuyTmpl && selectedBuyTmpl.id) {
+      tmplId = selectedBuyTmpl.id;
+      tmplName = selectedBuyTmpl.name;
+      unit = selectedBuyTmpl.unit;
     } else {
-      var name = $('noteInput').value.trim() || 'Прочее';
+      var name = $('buyNoteInput').value.trim() || 'Прочее';
       tmplId = 'custom_' + name.toLowerCase().replace(/\s+/g, '_');
       tmplName = name;
       unit = 'кг';
     }
 
     var tx = {
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      type: modalType,
+      id: uid(),
+      type: 'buy',
       templateId: tmplId,
       templateName: tmplName,
       unit: unit,
       amount_qty: q,
       sum: s,
-      note: tmplName,
       date: todayKey(),
       createdAt: Date.now()
     };
@@ -748,7 +890,7 @@
       .then(function () {
         setSync('ok', 'синхронизировано');
         toast('Сохранено', 'ok');
-        closeModal('modalBg');
+        closeModal('buyBg');
       })
       .catch(function (e) {
         console.error(e);
@@ -757,11 +899,129 @@
       });
   }
 
-  function deleteTx(id) {
-    if (!confirm('Удалить операцию?')) return;
-    db.ref(BASE + '/transactions/' + id).remove()
-      .then(function () { toast('Удалено', 'ok'); })
-      .catch(function () { toast('Ошибка удаления', 'err'); });
+  /* ============ Modal: Продал ============ */
+  var sellRowCounter = 0;
+
+  function openSellModal() {
+    $('sellRows').innerHTML = '';
+    sellRowCounter = 0;
+    addSellRow(); // одна пустая строка по умолчанию
+    renderSellTemplates();
+    updateSellTotal();
+    $('sellBg').classList.add('active');
+  }
+
+  function addSellRow(name, qty, price) {
+    sellRowCounter++;
+    var id = 'sellrow_' + sellRowCounter;
+    var row = document.createElement('div');
+    row.className = 'multi-row';
+    row.dataset.rowId = id;
+    row.innerHTML =
+      '<input type="text" class="row-name" placeholder="Название" value="' + (name ? escapeHtml(name) : '') + '" />' +
+      '<input type="number" class="row-qty" placeholder="1" inputmode="decimal" step="1" value="' + (qty || '') + '" />' +
+      '<input type="number" class="row-price" placeholder="0" inputmode="decimal" step="0.01" value="' + (price || '') + '" />' +
+      '<button type="button" class="row-del">×</button>';
+
+    row.querySelector('.row-del').addEventListener('click', function () {
+      // Оставляем хотя бы одну строку
+      if (document.querySelectorAll('#sellRows .multi-row').length > 1) {
+        row.remove();
+        updateSellTotal();
+      } else {
+        row.querySelector('.row-name').value = '';
+        row.querySelector('.row-qty').value = '';
+        row.querySelector('.row-price').value = '';
+        updateSellTotal();
+      }
+    });
+
+    row.querySelector('.row-qty').addEventListener('input', updateSellTotal);
+    row.querySelector('.row-price').addEventListener('input', updateSellTotal);
+
+    $('sellRows').appendChild(row);
+    return row;
+  }
+
+  function renderSellTemplates() {
+    var c = $('sellTemplates');
+    var html = '';
+    for (var i = 0; i < sellTemplates.length; i++) {
+      html += '<button class="qt-btn" data-name="' + escapeHtml(sellTemplates[i].name) + '">' + escapeHtml(sellTemplates[i].name) + '</button>';
+    }
+    c.innerHTML = html;
+
+    var btns = c.querySelectorAll('.qt-btn');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].addEventListener('click', function () {
+        // Если последняя строка пустая — заполняем её, иначе создаём новую
+        var rows = document.querySelectorAll('#sellRows .multi-row');
+        var target = null;
+        for (var k = rows.length - 1; k >= 0; k--) {
+          var nm = rows[k].querySelector('.row-name').value.trim();
+          var qt = rows[k].querySelector('.row-qty').value.trim();
+          var pr = rows[k].querySelector('.row-price').value.trim();
+          if (!nm && !qt && !pr) { target = rows[k]; break; }
+        }
+        if (!target) target = addSellRow();
+        target.querySelector('.row-name').value = this.dataset.name;
+        target.querySelector('.row-qty').focus();
+        updateSellTotal();
+      });
+    }
+  }
+
+  function updateSellTotal() {
+    var total = 0;
+    var rows = document.querySelectorAll('#sellRows .multi-row');
+    for (var i = 0; i < rows.length; i++) {
+      var q = parseFloat(rows[i].querySelector('.row-qty').value.replace(',', '.')) || 0;
+      var p = parseFloat(rows[i].querySelector('.row-price').value.replace(',', '.')) || 0;
+      total += q * p;
+    }
+    $('sellTotal').textContent = fmtMoney(total);
+  }
+
+  function saveSell() {
+    var rows = document.querySelectorAll('#sellRows .multi-row');
+    var items = [];
+    var total = 0;
+
+    for (var i = 0; i < rows.length; i++) {
+      var name = rows[i].querySelector('.row-name').value.trim();
+      var q = parseFloat(rows[i].querySelector('.row-qty').value.replace(',', '.')) || 0;
+      var p = parseFloat(rows[i].querySelector('.row-price').value.replace(',', '.')) || 0;
+      if (!name && !q && !p) continue;
+      if (!name) { toast('Заполни название в строке ' + (i + 1), 'err'); return; }
+      if (q <= 0) { toast('Кол-во в строке ' + (i + 1), 'err'); return; }
+      if (p <= 0) { toast('Цена в строке ' + (i + 1), 'err'); return; }
+      items.push({ name: name, qty: q, price: p, subtotal: q * p });
+      total += q * p;
+    }
+
+    if (!items.length) { toast('Добавь хотя бы одну позицию', 'err'); return; }
+
+    var tx = {
+      id: uid(),
+      type: 'sell',
+      items: items,
+      sum: total,
+      date: todayKey(),
+      createdAt: Date.now()
+    };
+
+    setSync('sync', 'отправка…');
+    db.ref(BASE + '/transactions/' + tx.id).set(tx)
+      .then(function () {
+        setSync('ok', 'синхронизировано');
+        toast('Продажа сохранена', 'ok');
+        closeModal('sellBg');
+      })
+      .catch(function (e) {
+        console.error(e);
+        setSync('err', 'ошибка');
+        toast('Не удалось сохранить', 'err');
+      });
   }
 
   /* ============ Templates editor ============ */
@@ -771,80 +1031,70 @@
   }
 
   function renderTemplatesEditor() {
-    var c = $('tmplList');
-    if (!templates.length) {
-      c.innerHTML = '<div class="empty" style="padding:12px">Нет шаблонов</div>';
-      return;
+    // Покупка
+    var cB = $('buyTmplList');
+    if (!buyTemplates.length) cB.innerHTML = '<div class="empty" style="padding:10px;font-size:12px">Нет шаблонов</div>';
+    else {
+      cB.innerHTML = buyTemplates.map(function (t) {
+        return '<div class="tmpl-item">' +
+          '<div class="tmpl-info"><div class="tmpl-name">' + escapeHtml(t.name) + '</div><div class="tmpl-unit">' + t.unit + '</div></div>' +
+          '<button class="tmpl-del" data-kind="buy" data-id="' + t.id + '">×</button>' +
+        '</div>';
+      }).join('');
     }
-    c.innerHTML = templates.map(function (t) {
-      return '<div class="tmpl-item">' +
-        '<div class="tmpl-info">' +
-          '<div class="tmpl-name">' + escapeHtml(t.name) + '</div>' +
-          '<div class="tmpl-unit">единица: ' + t.unit + '</div>' +
-        '</div>' +
-        '<button class="tmpl-del" data-id="' + t.id + '">×</button>' +
-      '</div>';
-    }).join('');
 
-    var btns = c.querySelectorAll('.tmpl-del');
-    for (var i = 0; i < btns.length; i++) {
-      btns[i].addEventListener('click', function () { deleteTemplate(this.dataset.id); });
+    // Продажа
+    var cS = $('sellTmplList');
+    if (!sellTemplates.length) cS.innerHTML = '<div class="empty" style="padding:10px;font-size:12px">Нет шаблонов</div>';
+    else {
+      cS.innerHTML = sellTemplates.map(function (t) {
+        return '<div class="tmpl-item">' +
+          '<div class="tmpl-info"><div class="tmpl-name">' + escapeHtml(t.name) + '</div></div>' +
+          '<button class="tmpl-del" data-kind="sell" data-id="' + t.id + '">×</button>' +
+        '</div>';
+      }).join('');
+    }
+
+    // Обработчики удаления
+    var dels = document.querySelectorAll('#buyTmplList .tmpl-del, #sellTmplList .tmpl-del');
+    for (var i = 0; i < dels.length; i++) {
+      dels[i].addEventListener('click', function () {
+        if (this.dataset.kind === 'buy') deleteBuyTemplate(this.dataset.id);
+        else deleteSellTemplate(this.dataset.id);
+      });
     }
   }
 
   /* ============ Stock editor ============ */
   function openStockEditor() {
-    var stock = getStockByTemplate();
-    var c = $('stockEditList');
-    var keys = Object.keys(stock);
-    if (!keys.length) {
-      c.innerHTML = '<div class="empty">Нет данных о сырье</div>';
-    } else {
-      c.innerHTML = keys.map(function (k) {
-        var v = stock[k];
-        var qty = v.actual !== undefined ? v.actual : v.qty;
-        return '<div class="stock-edit-row">' +
-          '<div class="name">' + escapeHtml(v.name) + '</div>' +
-          '<div class="diff" data-diff="' + k + '"></div>' +
-          '<input type="number" step="0.01" inputmode="decimal" value="' + qty + '" data-input="' + k + '" />' +
-          '<span class="unit">' + v.unit + '</span>' +
-        '</div>';
-      }).join('');
+    var sysStock = getPlasticStock();
+    $('stockInput').value = sysStock;
+    $('wasteInput').value = getWaste();
+    $('stockDiff').textContent = '';
 
-      var inputs = c.querySelectorAll('input[data-input]');
-      for (var i = 0; i < inputs.length; i++) {
-        inputs[i].addEventListener('input', function () {
-          var k = this.dataset.input;
-          var sys = stock[k].qty;
-          var act = parseFloat(this.value.replace(',', '.')) || 0;
-          var delta = act - sys;
-          var el = c.querySelector('[data-diff="' + k + '"]');
-          if (el) {
-            if (Math.abs(delta) > 0.001) {
-              el.textContent = (delta > 0 ? '+' : '') + delta.toFixed(1);
-            } else {
-              el.textContent = '';
-            }
-          }
-        });
-      }
-    }
+    $('stockInput').oninput = function () {
+      var act = parseFloat(this.value.replace(',', '.')) || 0;
+      var delta = act - sysStock;
+      var el = $('stockDiff');
+      if (Math.abs(delta) > 0.001) el.textContent = (delta > 0 ? '+' : '') + delta.toFixed(1);
+      else el.textContent = '';
+    };
+
     $('stockBg').classList.add('active');
   }
 
   function applyStockEdit() {
-    var inputs = document.querySelectorAll('#stockEditList input[data-input]');
-    var newFixes = {};
-    for (var i = 0; i < inputs.length; i++) {
-      var k = inputs[i].dataset.input;
-      var val = parseFloat(inputs[i].value.replace(',', '.'));
-      if (!isNaN(val)) newFixes[k] = val;
-    }
+    var plastic = parseFloat($('stockInput').value.replace(',', '.'));
+    var waste = parseFloat($('wasteInput').value.replace(',', '.'));
+    if (isNaN(plastic)) plastic = 0;
+    if (isNaN(waste)) waste = 0;
+
+    var meta = { plasticStock: plastic, waste: waste };
 
     setSync('sync', 'отправка…');
-    db.ref(BASE + '/stockFixes').set(newFixes)
+    db.ref(BASE + '/stockMeta').set(meta)
       .then(function () {
-        stockFixes = newFixes;
+        stockMeta = meta;
         setSync('ok', 'синхронизировано');
         toast('Склад обновлён', 'ok');
         render();
@@ -871,71 +1121,50 @@
       setSync('err', 'нет связи');
     });
 
-    db.ref(BASE + '/stockFixes').on('value', function (snap) {
-      stockFixes = snap.val() || {};
+    db.ref(BASE + '/stockMeta').on('value', function (snap) {
+      stockMeta = snap.val() || { plasticStock: null, waste: 0 };
       render();
     });
   }
 
-  /* ============ Login ============ */
-  function initLogin() {
-    var dots = document.querySelectorAll('#pinDisplay .pin-dot');
-
-    function updateDots() {
-      for (var i = 0; i < dots.length; i++) {
-        dots[i].className = 'pin-dot' + (i < pinBuffer.length ? ' filled' : '');
-      }
-    }
-
-    $('keypad').addEventListener('click', function (e) {
-      var btn = e.target.closest('button');
-      if (!btn || !btn.dataset.k) return;
-      var k = btn.dataset.k;
-      if (k === 'back') {
-        pinBuffer = pinBuffer.slice(0, -1);
-      } else if (pinBuffer.length < 4) {
-        pinBuffer += k;
-      }
-      updateDots();
-
-      if (pinBuffer.length === 4) {
-        if (pinBuffer === PIN) {
-          setTimeout(function () {
-            $('login').classList.add('hidden');
-            $('app').classList.add('active');
-            sessionStorage.setItem(LS_SESSION, '1');
-            subscribeFirebase();
-          }, 150);
-        } else {
-          for (var i = 0; i < dots.length; i++) dots[i].classList.add('err');
-          if (navigator.vibrate) navigator.vibrate(100);
-          setTimeout(function () {
-            pinBuffer = '';
-            updateDots();
-          }, 500);
-        }
-      }
-    });
+  function deleteTx(id) {
+    if (!confirm('Удалить операцию?')) return;
+    db.ref(BASE + '/transactions/' + id).remove()
+      .then(function () { toast('Удалено', 'ok'); })
+      .catch(function () { toast('Ошибка удаления', 'err'); });
   }
 
-  /* ============ Bind events ============ */
+  function closeModal(id) { $(id).classList.remove('active'); }
+
+  /* ============ Bind ============ */
   function bindEvents() {
-    $('btnBuy').addEventListener('click', function () { openModal('buy'); });
-    $('btnSell').addEventListener('click', function () { openModal('sell'); });
+    $('btnBuy').addEventListener('click', openBuyModal);
+    $('btnSell').addEventListener('click', openSellModal);
     $('stockSummary').addEventListener('click', openStockEditor);
     $('openTmplBtn').addEventListener('click', openTemplates);
-    $('saveBtn').addEventListener('click', saveTx);
-    $('cancelTxBtn').addEventListener('click', function () { closeModal('modalBg'); });
-    $('addTmplBtn').addEventListener('click', addTemplate);
+
+    // Купил
+    $('saveBuyBtn').addEventListener('click', saveBuy);
+    $('cancelBuyBtn').addEventListener('click', function () { closeModal('buyBg'); });
+    $('buyWeightInput').addEventListener('input', updateBuyHint);
+    $('buyAmountInput').addEventListener('input', updateBuyHint);
+
+    // Продал
+    $('saveSellBtn').addEventListener('click', saveSell);
+    $('cancelSellBtn').addEventListener('click', function () { closeModal('sellBg'); });
+    $('addSellRow').addEventListener('click', function () { addSellRow(); });
+
+    // Шаблоны
     $('closeTmplBtn').addEventListener('click', function () { closeModal('tmplBg'); });
+    $('addBuyTmplBtn').addEventListener('click', addBuyTemplate);
+    $('addSellTmplBtn').addEventListener('click', addSellTemplate);
+
+    // Склад
     $('cancelStockBtn').addEventListener('click', function () { closeModal('stockBg'); });
     $('applyStockBtn').addEventListener('click', applyStockEdit);
 
-    $('weightInput').addEventListener('input', updateQuickHint);
-    $('amountInput').addEventListener('input', updateQuickHint);
-
-    // Закрытие модалок по тапу на фон
-    ['modalBg', 'tmplBg', 'stockBg'].forEach(function (id) {
+    // Закрытие по фону
+    ['buyBg', 'sellBg', 'tmplBg', 'stockBg'].forEach(function (id) {
       $(id).addEventListener('click', function (e) {
         if (e.target === this) closeModal(id);
       });
@@ -946,10 +1175,9 @@
   function init() {
     loadTemplates();
 
-    // Firebase
     try {
       if (typeof firebase === 'undefined') {
-        $('loading').innerHTML = '<div style="color:#ff7b72;padding:20px;text-align:center">Firebase SDK не загрузился.<br>Проверь интернет или открой через https://</div>';
+        $('loading').innerHTML = '<div style="color:#ff7b72;padding:20px;text-align:center">Firebase SDK не загрузился.<br>Проверь интернет.</div>';
         return;
       }
       firebase.initializeApp(firebaseConfig);
@@ -963,31 +1191,21 @@
     $('loading').classList.add('hidden');
 
     bindEvents();
-    initLogin();
-
-    // Автовход в рамках сессии
-    if (sessionStorage.getItem(LS_SESSION) === '1') {
-      $('login').classList.add('hidden');
-      $('app').classList.add('active');
-      subscribeFirebase();
-    }
+    subscribeFirebase();
   }
 
-  // Запуск когда DOM готов
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
 
-  // Service worker (работает только по http/https, на file:// просто молчит)
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('sw.js').catch(function () {});
     });
   }
 
-  // iOS anti-zoom
   var lastTouch = 0;
   document.addEventListener('touchend', function (e) {
     var now = Date.now();
