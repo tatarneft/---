@@ -37,7 +37,6 @@
   .sync-dot.sync { background: var(--warn); animation: pulse 1.2s ease-in-out infinite; }
   @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.3 } }
 
-  /* Target button */
   .target-btn {
     background: var(--card);
     border: 1px solid var(--border);
@@ -109,16 +108,36 @@
   .section-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin: 4px 4px 10px; display: flex; justify-content: space-between; align-items: center; }
   .section-title button { background: none; border: none; color: var(--accent); font-size: 12px; font-family: inherit; cursor: pointer; text-transform: none; letter-spacing: 0; }
 
+  /* ==== История: формочки с цветом ==== */
   .tx-list { display: flex; flex-direction: column; gap: 6px; }
-  .tx-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; animation: slideIn 0.2s ease; }
+  .tx-item {
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+    animation: slideIn 0.2s ease;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+  .tx-item.sell {
+    background: linear-gradient(135deg, rgba(48,209,88,0.10), rgba(48,209,88,0.03));
+    border-color: rgba(48,209,88,0.22);
+  }
+  .tx-item.buy {
+    background: linear-gradient(135deg, rgba(255,69,58,0.10), rgba(255,69,58,0.03));
+    border-color: rgba(255,69,58,0.22);
+  }
   @keyframes slideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
   .tx-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
-  .tx-note { font-size: 14px; font-weight: 500; }
+  .tx-note { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tx-item.sell .tx-note { color: #a8f0bd; }
+  .tx-item.buy .tx-note { color: #ffb0a8; }
   .tx-date { font-size: 11px; color: var(--muted); }
-  .tx-pos { font-size: 11px; color: var(--cyan); font-variant-numeric: tabular-nums; line-height: 1.5; }
+  .tx-pos { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; line-height: 1.5; }
+  .tx-item.sell .tx-pos { color: rgba(168,240,189,0.7); }
+  .tx-item.buy .tx-pos { color: rgba(255,176,168,0.7); }
   .tx-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .tx-amount-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
-  .tx-amount { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tx-amount { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .tx-amount.income { color: var(--green); }
   .tx-amount.expense { color: var(--red); }
   .tx-del { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 2px; line-height: 1; }
@@ -164,11 +183,13 @@
   .btn-save.income { background: var(--green); }
   .btn-save.expense { background: var(--red); }
 
-  /* Продажа */
-  .sell-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-  .sell-row {
+  /* ==== Строки в модалках (Купил/Продал) ==== */
+  .rows-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+
+  /* КУПИЛ: [Имя] [Кол-во+ед] [Сумма] [×] */
+  .row-buy {
     display: grid;
-    grid-template-columns: 1fr 64px 84px;
+    grid-template-columns: 1fr 78px 90px 22px;
     gap: 6px;
     align-items: center;
     padding: 10px 12px;
@@ -176,35 +197,77 @@
     border: 1px solid var(--border);
     border-radius: 12px;
   }
-  .sell-row input {
+  .row-buy input {
     background: transparent; border: none;
     font-size: 14px; color: var(--text); font-family: inherit;
     outline: none; min-width: 0; width: 100%;
     padding: 2px 0;
   }
-  .sell-row input.row-name { font-weight: 500; }
-  .sell-row input.row-qty,
-  .sell-row input.row-price {
+  .row-buy input.row-name { font-weight: 500; }
+  .row-buy .qty-wrap,
+  .row-buy .sum-wrap {
+    position: relative;
+  }
+  .row-buy input.row-qty,
+  .row-buy input.row-sum {
+    text-align: right; font-variant-numeric: tabular-nums;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+    padding: 4px 22px 4px 6px;
+  }
+  .row-buy .qty-wrap::after,
+  .row-buy .sum-wrap::after {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    font-size: 10px; color: var(--muted); pointer-events: none;
+  }
+  .row-buy .qty-wrap::after { content: attr(data-unit); }
+  .row-buy .sum-wrap::after { content: '₽'; }
+  .row-buy input.row-qty:focus,
+  .row-buy input.row-sum:focus { background: rgba(94,92,230,0.15); }
+  .row-buy input::placeholder { color: var(--muted); opacity: 0.5; }
+
+  /* ПРОДАЛ: [Имя] [Кол-во] [Цена] [×] */
+  .row-sell {
+    display: grid;
+    grid-template-columns: 1fr 64px 84px 22px;
+    gap: 6px;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .row-sell input {
+    background: transparent; border: none;
+    font-size: 14px; color: var(--text); font-family: inherit;
+    outline: none; min-width: 0; width: 100%;
+    padding: 2px 0;
+  }
+  .row-sell input.row-name { font-weight: 500; }
+  .row-sell input.row-qty,
+  .row-sell input.row-price {
     text-align: right; font-variant-numeric: tabular-nums;
     background: rgba(255,255,255,0.03);
     border-radius: 6px; padding: 4px 6px;
   }
-  .sell-row input.row-qty::placeholder,
-  .sell-row input.row-price::placeholder { color: var(--muted); opacity: 0.5; }
-  .sell-row input.row-qty:focus,
-  .sell-row input.row-price:focus { background: rgba(94,92,230,0.15); }
-  .sell-row input::placeholder { color: var(--muted); }
-  .sell-row .row-del {
+  .row-sell input.row-qty:focus,
+  .row-sell input.row-price:focus { background: rgba(94,92,230,0.15); }
+  .row-sell input::placeholder { color: var(--muted); opacity: 0.5; }
+
+  /* Кнопка удаления строки */
+  .row-x {
     background: none; border: none; color: var(--muted);
-    font-size: 18px; cursor: pointer; padding: 0; line-height: 1;
-    width: 20px;
+    font-size: 16px; cursor: pointer; padding: 0; line-height: 1;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    transition: all 0.15s;
   }
-  .sell-row .row-del:active { color: var(--red); }
-  .sell-row.has-del { grid-template-columns: 1fr 64px 84px 20px; }
+  .row-x:active { background: rgba(255,69,58,0.15); color: var(--red); }
 
   .multi-header {
     display: grid;
-    grid-template-columns: 1fr 64px 84px;
+    grid-template-columns: 1fr 78px 90px 22px;
     gap: 6px;
     font-size: 10px;
     color: var(--muted);
@@ -213,10 +276,10 @@
     padding: 0 14px;
     margin-bottom: 6px;
   }
+  .multi-header.sell { grid-template-columns: 1fr 64px 84px 22px; }
   .multi-header span:nth-child(2),
   .multi-header span:nth-child(3) { text-align: right; }
 
-  /* Тонкая линия + добавить */
   .add-custom-line {
     display: flex;
     align-items: center;
@@ -251,7 +314,9 @@
     border-top: 1px solid var(--border);
     margin-top: 4px;
   }
-  .multi-total b { color: var(--green); font-variant-numeric: tabular-nums; font-size: 16px; }
+  .multi-total b { font-variant-numeric: tabular-nums; font-size: 16px; }
+  .multi-total.sell b { color: var(--green); }
+  .multi-total.buy b { color: var(--red); }
 
   /* Targets */
   .target-card {
@@ -302,7 +367,24 @@
     gap: 8px; padding: 10px 12px;
     background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
   }
-  .tmpl-item.buy .tmpl-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .tmpl-item.buy { display: grid; grid-template-columns: 1fr 88px 28px; gap: 8px; }
+  .tmpl-item.buy .tmpl-name-input {
+    background: transparent; border: none;
+    font-size: 14px; font-weight: 500; color: var(--text);
+    font-family: inherit; outline: none; min-width: 0; width: 100%;
+    padding: 2px 0;
+  }
+  .tmpl-item.buy .tmpl-unit-select {
+    background: rgba(255,255,255,0.03);
+    border: none; border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 12px; color: var(--text);
+    font-family: inherit; outline: none;
+    text-align: right;
+    width: 100%;
+  }
+  .tmpl-item.buy .tmpl-unit-select:focus { background: rgba(94,92,230,0.15); }
+
   .tmpl-item.sell { display: grid; grid-template-columns: 1fr 84px 28px; gap: 8px; }
   .tmpl-item.sell .tmpl-name-input {
     background: transparent; border: none;
@@ -458,26 +540,22 @@
     <div class="modal-handle"></div>
     <h2>Купил</h2>
 
-    <div class="field-label"><span>Что</span></div>
-    <div class="quick-templates" id="buyTemplates"></div>
-
-    <div id="buyCustomNameWrap" style="display:none">
-      <input type="text" id="buyNoteInput" placeholder="Название" autocomplete="off" />
+    <div class="multi-header">
+      <span>Название</span>
+      <span>Кол-во</span>
+      <span>Сумма ₽</span>
+      <span></span>
     </div>
+    <div class="rows-list" id="buyRows"></div>
 
-    <div class="field-label"><span>Количество</span></div>
-    <div class="input-with-unit">
-      <input type="number" id="buyWeightInput" placeholder="0" inputmode="decimal" step="0.01" autocomplete="off" />
-      <span class="unit" id="buyWeightUnit">кг</span>
+    <button class="add-custom-line" id="addCustomBuyLine">
+      <span class="plus">+</span> добавить сырьё
+    </button>
+
+    <div class="multi-total buy">
+      <span>Итого:</span>
+      <b id="buyTotal">0 ₽</b>
     </div>
-
-    <div class="field-label"><span>Сумма</span></div>
-    <div class="input-with-unit">
-      <input type="number" id="buyAmountInput" placeholder="0" inputmode="decimal" step="0.01" autocomplete="off" />
-      <span class="unit">₽</span>
-    </div>
-
-    <div class="quick-hint" id="buyHint"></div>
 
     <div class="modal-actions">
       <button class="btn-cancel" id="cancelBuyBtn">Отмена</button>
@@ -492,18 +570,19 @@
     <div class="modal-handle"></div>
     <h2>Продал</h2>
 
-    <div class="multi-header">
+    <div class="multi-header sell">
       <span>Название</span>
       <span>Кол-во</span>
       <span>Цена ₽</span>
+      <span></span>
     </div>
-    <div class="sell-rows" id="sellRows"></div>
+    <div class="rows-list" id="sellRows"></div>
 
-    <button class="add-custom-line" id="addCustomLine">
+    <button class="add-custom-line" id="addCustomSellLine">
       <span class="plus">+</span> добавить товар
     </button>
 
-    <div class="multi-total">
+    <div class="multi-total sell">
       <span>Итого:</span>
       <b id="sellTotal">0 ₽</b>
     </div>
@@ -619,22 +698,19 @@
 
   var PROFILE = 'Aynaz';
   var BASE = 'users/' + PROFILE;
-  var LS_BUY_TMPL = 'uchet_buy_templates_v5';
-  var LS_SELL_TMPL = 'uchet_sell_templates_v5';
+  var LS_BUY_TMPL = 'uchet_buy_templates_v6';
+  var LS_SELL_TMPL = 'uchet_sell_templates_v6';
 
   var db = null;
   var transactions = [];
   var stockMeta = { waste: 0 };
   var buyTemplates = [];
   var sellTemplates = [];
-  var selectedBuyTmpl = null;
-  var customRowCounter = 0;
 
   var DEFAULT_BUY_TMPL = [
     { id: 'b_plastic', name: 'Пластик', unit: 'кг' },
     { id: 'b_glue',    name: 'Клей',    unit: 'г'  },
-    { id: 'b_magnet',  name: 'Магниты', unit: 'шт' },
-    { id: 'b_other',   name: 'Другое',  unit: 'кг' }
+    { id: 'b_magnet',  name: 'Магниты', unit: 'шт' }
   ];
 
   var DEFAULT_SELL_TMPL = [
@@ -684,20 +760,6 @@
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   }
   function closeModal(id) { $(id).classList.remove('active'); }
-
-  /* Авто-выделение поля при фокусе */
-  function autoSelectOnFocus(input) {
-    input.addEventListener('focus', function () {
-      var self = this;
-      setTimeout(function () { self.select(); }, 10);
-    });
-    input.addEventListener('click', function () {
-      // на iPhone второй тап чтобы курсор не прыгал
-      if (document.activeElement === this) {
-        // уже в фокусе, оставляем выделение
-      }
-    });
-  }
 
   /* ============ Templates ============ */
   function loadTemplates() {
@@ -753,7 +815,16 @@
     saveTemplates();
     renderTemplatesEditor();
   }
-
+  function updateBuyTemplate(id, field, value) {
+    for (var i = 0; i < buyTemplates.length; i++) {
+      if (buyTemplates[i].id === id) {
+        if (field === 'name') buyTemplates[i].name = value;
+        else if (field === 'unit') buyTemplates[i].unit = value;
+        break;
+      }
+    }
+    saveTemplates();
+  }
   function updateSellTemplate(id, field, value) {
     for (var i = 0; i < sellTemplates.length; i++) {
       if (sellTemplates[i].id === id) {
@@ -766,7 +837,6 @@
   }
 
   /* ============ Plastic stock ============ */
-  // Системный = сумма покупок «Пластик» в кг
   function getSystemPlasticStock() {
     var total = 0;
     transactions.forEach(function (t) {
@@ -776,14 +846,10 @@
     });
     return total;
   }
-  // Текущий = системный − брак. Если операций нет — 0 (без минуса).
   function getCurrentPlasticStock() {
     var sys = getSystemPlasticStock();
-    var waste = stockMeta.waste || 0;
-    var cur = sys - waste;
-    // Если sys == 0 (все операции удалены) — обнуляем и брак
     if (sys === 0) return 0;
-    return cur;
+    return sys - (stockMeta.waste || 0);
   }
   function getWaste() {
     var sys = getSystemPlasticStock();
@@ -903,6 +969,7 @@
     renderList();
   }
 
+  /* ============ Render list ==== */
   function renderList() {
     var list = $('txList');
     if (!transactions.length) {
@@ -914,19 +981,30 @@
       var d = new Date(t.createdAt);
       var dateStr = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
       var sign = t.type === 'sell' ? '+' : '−';
+      var itemClass = t.type === 'sell' ? 'sell' : 'buy';
 
-      var posLines = '';
-      if (t.type === 'sell' && t.items && t.items.length) {
-        posLines = t.items.map(function (it) {
-          return escapeHtml(it.name) + ' · ' + it.qty + ' × ' + it.price + ' ₽';
-        }).join('<br>');
-      } else if (t.amount_qty) {
-        posLines = escapeHtml(t.templateName || '') + ' · ' + fmtAmount(t.amount_qty, t.unit);
+      // Формируем список позиций
+      var itemsList = [];
+      if (t.type === 'sell') {
+        if (t.items && t.items.length) {
+          t.items.forEach(function (it) {
+            itemsList.push(escapeHtml(it.name) + ' · ' + it.qty + ' × ' + it.price + ' ₽');
+          });
+        }
+      } else {
+        // Покупка: если старая структура (одна позиция) — упакуем
+        if (t.items && t.items.length) {
+          t.items.forEach(function (it) {
+            itemsList.push(escapeHtml(it.name) + ' · ' + fmtAmount(it.qty, it.unit) + ' · ' + it.sum + ' ₽');
+          });
+        } else if (t.amount_qty) {
+          itemsList.push(escapeHtml(t.templateName || '') + ' · ' + fmtAmount(t.amount_qty, t.unit) + ' · ' + t.sum + ' ₽');
+        }
       }
+      var posLines = itemsList.join('<br>');
 
-      return '<div class="tx-item">' +
+      return '<div class="tx-item ' + itemClass + '">' +
         '<div class="tx-left">' +
-          '<div class="tx-note">' + (t.type === 'sell' ? 'Продажа' : escapeHtml(t.templateName || 'Покупка')) + '</div>' +
           (posLines ? '<div class="tx-pos">' + posLines + '</div>' : '') +
           '<div class="tx-date">' + dateStr + '</div>' +
         '</div>' +
@@ -947,100 +1025,126 @@
 
   /* ============ Modal: Купил ============ */
   function openBuyModal() {
-    selectedBuyTmpl = null;
-    $('buyNoteInput').value = '';
-    $('buyWeightInput').value = '';
-    $('buyAmountInput').value = '';
-    $('buyWeightUnit').textContent = 'кг';
-    $('buyCustomNameWrap').style.display = 'none';
-    $('buyHint').innerHTML = '';
-    renderBuyTemplates();
+    renderBuyRows();
     $('buyBg').classList.add('active');
   }
 
-  function renderBuyTemplates() {
-    var c = $('buyTemplates');
-    var html = '';
+  function renderBuyRows() {
+    var c = $('buyRows');
+    c.innerHTML = '';
+
     for (var i = 0; i < buyTemplates.length; i++) {
-      var t = buyTemplates[i];
-      var sel = selectedBuyTmpl && selectedBuyTmpl.id === t.id ? ' selected' : '';
-      html += '<button class="qt-btn' + sel + '" data-id="' + t.id + '">' + escapeHtml(t.name) + ' · ' + t.unit + '</button>';
+      c.appendChild(makeBuyRow(buyTemplates[i].name, '', '', buyTemplates[i].unit, false));
     }
-    html += '<button class="qt-btn" data-id="__custom">Другое…</button>';
-    c.innerHTML = html;
-
-    var btns = c.querySelectorAll('.qt-btn');
-    for (var j = 0; j < btns.length; j++) {
-      btns[j].addEventListener('click', function () {
-        var id = this.dataset.id;
-        if (id === '__custom') {
-          selectedBuyTmpl = { id: null, name: '', unit: 'кг' };
-          $('buyCustomNameWrap').style.display = 'block';
-          $('buyWeightUnit').textContent = 'кг';
-        } else {
-          for (var k = 0; k < buyTemplates.length; k++) {
-            if (buyTemplates[k].id === id) { selectedBuyTmpl = buyTemplates[k]; break; }
-          }
-          $('buyCustomNameWrap').style.display = 'none';
-          $('buyWeightUnit').textContent = selectedBuyTmpl.unit;
-        }
-        renderBuyTemplates();
-        updateBuyHint();
-      });
+    if (!buyTemplates.length) {
+      c.innerHTML = '<div class="sell-empty">Нет шаблонов. Добавь через ⚙️ Шаблоны.</div>';
     }
-
-    if (!selectedBuyTmpl && buyTemplates.length) {
-      selectedBuyTmpl = buyTemplates[0];
-      $('buyWeightUnit').textContent = selectedBuyTmpl.unit;
-      var btns2 = c.querySelectorAll('.qt-btn');
-      for (var m = 0; m < btns2.length; m++) {
-        if (btns2[m].dataset.id === selectedBuyTmpl.id) btns2[m].classList.add('selected');
-      }
-    }
+    updateBuyTotal();
   }
 
-  function updateBuyHint() {
-    var q = parseFloat($('buyWeightInput').value.replace(',', '.'));
-    var a = parseFloat($('buyAmountInput').value.replace(',', '.'));
-    var hint = $('buyHint');
-    if (q > 0 && a > 0) {
-      var unit = selectedBuyTmpl ? selectedBuyTmpl.unit : 'кг';
-      hint.innerHTML = 'Цена: <b>' + (a / q).toFixed(2) + ' ₽/' + unit + '</b>';
-    } else {
-      hint.innerHTML = '';
+  function makeBuyRow(name, qty, sum, unit, custom) {
+    var row = document.createElement('div');
+    row.className = 'row-buy';
+    row.dataset.unit = unit || 'кг';
+    row.innerHTML =
+      '<input type="text" class="row-name" value="' + escapeHtml(name || '') + '" placeholder="Название" />' +
+      '<div class="qty-wrap" data-unit="' + (unit || 'кг') + '">' +
+        '<input type="number" class="row-qty" placeholder="0" inputmode="decimal" step="0.01" value="' + (qty || '') + '" />' +
+      '</div>' +
+      '<div class="sum-wrap">' +
+        '<input type="number" class="row-sum" placeholder="0" inputmode="decimal" step="0.01" value="' + (sum || '') + '" />' +
+      '</div>' +
+      '<button type="button" class="row-x">×</button>';
+
+    row.querySelector('.row-qty').addEventListener('input', updateBuyTotal);
+    row.querySelector('.row-sum').addEventListener('input', updateBuyTotal);
+    row.querySelector('.row-x').addEventListener('click', function () {
+      row.remove();
+      updateBuyTotal();
+    });
+
+    return row;
+  }
+
+  function addCustomBuyRow() {
+    var row = makeBuyRow('', '', '', 'кг', true);
+    $('buyRows').appendChild(row);
+    row.querySelector('.row-name').focus();
+    updateBuyTotal();
+  }
+
+  function updateBuyTotal() {
+    var total = 0;
+    var rows = document.querySelectorAll('#buyRows .row-buy');
+    for (var i = 0; i < rows.length; i++) {
+      var s = parseFloat(rows[i].querySelector('.row-sum').value.replace(',', '.')) || 0;
+      total += s;
     }
+    $('buyTotal').textContent = fmtMoney(total);
   }
 
   function saveBuy() {
-    var q = parseFloat($('buyWeightInput').value.replace(',', '.'));
-    var s = parseFloat($('buyAmountInput').value.replace(',', '.'));
-    if (!q || q <= 0) { $('buyWeightInput').focus(); toast('Введите количество', 'err'); return; }
-    if (!s || s <= 0) { $('buyAmountInput').focus(); toast('Введите сумму', 'err'); return; }
+    var rows = document.querySelectorAll('#buyRows .row-buy');
+    var items = [];
+    var total = 0;
 
-    var tmplId, tmplName, unit;
-    if (selectedBuyTmpl && selectedBuyTmpl.id) {
-      tmplId = selectedBuyTmpl.id;
-      tmplName = selectedBuyTmpl.name;
-      unit = selectedBuyTmpl.unit;
-    } else {
-      var name = $('buyNoteInput').value.trim() || 'Прочее';
-      tmplId = 'custom_' + name.toLowerCase().replace(/\s+/g, '_');
-      tmplName = name;
-      unit = 'кг';
+    for (var i = 0; i < rows.length; i++) {
+      var name = rows[i].querySelector('.row-name').value.trim();
+      var q = parseFloat(rows[i].querySelector('.row-qty').value.replace(',', '.')) || 0;
+      var s = parseFloat(rows[i].querySelector('.row-sum').value.replace(',', '.')) || 0;
+      var unit = rows[i].dataset.unit || 'кг';
+      if (q <= 0 && s <= 0) continue;
+      if (!name) { toast('Нужно название', 'err'); return; }
+      if (q <= 0) { toast('Нужно количество у «' + name + '»', 'err'); return; }
+      if (s <= 0) { toast('Нужна сумма у «' + name + '»', 'err'); return; }
+
+      // templateId для пластика — важно для склада
+      var tmplId = null;
+      for (var k = 0; k < buyTemplates.length; k++) {
+        if (buyTemplates[k].name === name) { tmplId = buyTemplates[k].id; break; }
+      }
+      if (!tmplId) tmplId = 'custom_' + name.toLowerCase().replace(/\s+/g, '_');
+
+      items.push({
+        name: name,
+        qty: q,
+        sum: s,
+        unit: unit,
+        templateId: tmplId
+      });
+      total += s;
+    }
+
+    if (!items.length) { toast('Заполни хотя бы одну позицию', 'err'); return; }
+
+    // Для совместимости со складом: если среди items есть «Пластик» — сохраняем templateId + amount_qty
+    var plasticItem = null;
+    for (var j = 0; j < items.length; j++) {
+      if (items[j].templateId === 'b_plastic' && items[j].unit === 'кг') {
+        plasticItem = items[j];
+        break;
+      }
     }
 
     var tx = {
       id: uid(), type: 'buy',
-      templateId: tmplId, templateName: tmplName, unit: unit,
-      amount_qty: q, sum: s,
+      items: items,
+      sum: total,
       date: todayKey(), createdAt: Date.now()
     };
+    // Поля для обратной совместимости и учёта склада
+    if (plasticItem) {
+      tx.templateId = 'b_plastic';
+      tx.templateName = plasticItem.name;
+      tx.unit = plasticItem.unit;
+      tx.amount_qty = plasticItem.qty;
+    }
 
     setSync('sync', 'отправка…');
     db.ref(BASE + '/transactions/' + tx.id).set(tx)
       .then(function () {
         setSync('ok', 'синхронизировано');
-        toast('Сохранено', 'ok');
+        toast('Покупка сохранена', 'ok');
         closeModal('buyBg');
       })
       .catch(function (e) {
@@ -1060,40 +1164,32 @@
     var c = $('sellRows');
     c.innerHTML = '';
 
-    // Строки из шаблонов
     for (var i = 0; i < sellTemplates.length; i++) {
       var t = sellTemplates[i];
       c.appendChild(makeSellRow(t.name, '', t.price, false));
     }
-
     if (!sellTemplates.length) {
       c.innerHTML = '<div class="sell-empty">Нет шаблонов. Добавь через ⚙️ Шаблоны.</div>';
     }
-
     updateSellTotal();
   }
 
-  // custom=true — строка с возможностью удалить
   function makeSellRow(name, qty, price, custom) {
     var row = document.createElement('div');
-    row.className = 'sell-row' + (custom ? ' has-del' : '');
+    row.className = 'row-sell';
     row.innerHTML =
       '<input type="text" class="row-name" value="' + escapeHtml(name || '') + '" placeholder="Название" />' +
       '<input type="number" class="row-qty" placeholder="0" inputmode="decimal" step="1" min="0" value="' + (qty || '') + '" />' +
       '<input type="number" class="row-price" placeholder="0" inputmode="decimal" step="0.01" min="0" value="' + (price || '') + '" />' +
-      (custom ? '<button type="button" class="row-del">×</button>' : '');
+      '<button type="button" class="row-x">×</button>';
 
-    var qtyInp = row.querySelector('.row-qty');
-    var priceInp = row.querySelector('.row-price');
-    qtyInp.addEventListener('input', updateSellTotal);
-    priceInp.addEventListener('input', updateSellTotal);
+    row.querySelector('.row-qty').addEventListener('input', updateSellTotal);
+    row.querySelector('.row-price').addEventListener('input', updateSellTotal);
+    row.querySelector('.row-x').addEventListener('click', function () {
+      row.remove();
+      updateSellTotal();
+    });
 
-    if (custom) {
-      row.querySelector('.row-del').addEventListener('click', function () {
-        row.remove();
-        updateSellTotal();
-      });
-    }
     return row;
   }
 
@@ -1106,7 +1202,7 @@
 
   function updateSellTotal() {
     var total = 0;
-    var rows = document.querySelectorAll('#sellRows .sell-row');
+    var rows = document.querySelectorAll('#sellRows .row-sell');
     for (var i = 0; i < rows.length; i++) {
       var q = parseFloat(rows[i].querySelector('.row-qty').value.replace(',', '.')) || 0;
       var p = parseFloat(rows[i].querySelector('.row-price').value.replace(',', '.')) || 0;
@@ -1116,7 +1212,7 @@
   }
 
   function saveSell() {
-    var rows = document.querySelectorAll('#sellRows .sell-row');
+    var rows = document.querySelectorAll('#sellRows .row-sell');
     var items = [];
     var total = 0;
 
@@ -1173,8 +1269,7 @@
       return;
     }
 
-    // Отбираем товары с ценой > 0
-    var items = sellTemplates.filter(function (t) { return t.price > 0 && t.name && t.name !== 'Другое'; });
+    var items = sellTemplates.filter(function (t) { return t.price > 0 && t.name; });
 
     if (!items.length) {
       summary.style.display = 'none';
@@ -1182,10 +1277,8 @@
       return;
     }
 
-    // Сортируем от дорогих к дешёвым
     items.sort(function (a, b) { return b.price - a.price; });
 
-    // Для каждого товара — сколько штук нужно продать, чтобы закрыть цель целиком
     var html = '';
     var totalInfo = [];
 
@@ -1206,15 +1299,11 @@
       totalInfo.push({ name: t.name, count: needCount, sum: sum, price: t.price });
     }
 
-    // Мини-комбо: сколько чего в комбинации
-    // Ищем вариант «взять по одному из каждого, добить самым дешёвым» — самый оптимальный
-    // Но проще: показать краткую сводку по каждому товару
-
     summary.style.display = 'block';
     summary.innerHTML =
       'Цель: <b>' + fmtMoney(amount) + '</b><br>' +
       'Товаров с ценой: ' + items.length + '<br>' +
-      'Самый быстрый вариант: <b>' + totalInfo[items.length - 1].count + ' × ' + escapeHtml(totalInfo[items.length - 1].name) + '</b>';
+      'Самый быстрый вариант: <b>' + totalInfo[0].count + ' × ' + escapeHtml(totalInfo[0].name) + '</b>';
 
     results.innerHTML = html;
   }
@@ -1231,14 +1320,27 @@
       cB.innerHTML = '<div class="empty" style="padding:10px;font-size:12px">Нет шаблонов</div>';
     } else {
       cB.innerHTML = buyTemplates.map(function (t) {
-        return '<div class="tmpl-item buy">' +
-          '<div class="tmpl-info">' +
-            '<div class="tmpl-name">' + escapeHtml(t.name) + '</div>' +
-            '<div class="tmpl-unit">' + t.unit + '</div>' +
-          '</div>' +
+        return '<div class="tmpl-item buy" data-id="' + t.id + '">' +
+          '<input type="text" class="tmpl-name-input" value="' + escapeHtml(t.name) + '" data-field="name" />' +
+          '<select class="tmpl-unit-select" data-field="unit">' +
+            '<option value="кг"' + (t.unit === 'кг' ? ' selected' : '') + '>кг</option>' +
+            '<option value="г"' + (t.unit === 'г' ? ' selected' : '') + '>г</option>' +
+            '<option value="шт"' + (t.unit === 'шт' ? ' selected' : '') + '>шт</option>' +
+          '</select>' +
           '<button class="tmpl-del" data-kind="buy" data-id="' + t.id + '">×</button>' +
         '</div>';
       }).join('');
+
+      var buyItems = cB.querySelectorAll('.tmpl-item.buy');
+      for (var i = 0; i < buyItems.length; i++) {
+        (function (item) {
+          var id = item.dataset.id;
+          var nameInp = item.querySelector('.tmpl-name-input');
+          var unitSel = item.querySelector('.tmpl-unit-select');
+          nameInp.addEventListener('input', function () { updateBuyTemplate(id, 'name', this.value); });
+          unitSel.addEventListener('change', function () { updateBuyTemplate(id, 'unit', this.value); });
+        })(buyItems[i]);
+      }
     }
 
     var cS = $('sellTmplList');
@@ -1255,21 +1357,21 @@
         '</div>';
       }).join('');
 
-      var items = cS.querySelectorAll('.tmpl-item.sell');
-      for (var i = 0; i < items.length; i++) {
+      var sellItems = cS.querySelectorAll('.tmpl-item.sell');
+      for (var k = 0; k < sellItems.length; k++) {
         (function (item) {
           var id = item.dataset.id;
           var nameInp = item.querySelector('.tmpl-name-input');
           var priceInp = item.querySelector('.tmpl-price-input');
           nameInp.addEventListener('input', function () { updateSellTemplate(id, 'name', this.value); });
           priceInp.addEventListener('input', function () { updateSellTemplate(id, 'price', this.value); });
-        })(items[i]);
+        })(sellItems[k]);
       }
     }
 
     var dels = document.querySelectorAll('#buyTmplList .tmpl-del, #sellTmplList .tmpl-del');
-    for (var k = 0; k < dels.length; k++) {
-      dels[k].addEventListener('click', function () {
+    for (var m = 0; m < dels.length; m++) {
+      dels[m].addEventListener('click', function () {
         if (this.dataset.kind === 'buy') deleteBuyTemplate(this.dataset.id);
         else deleteSellTemplate(this.dataset.id);
       });
@@ -1297,7 +1399,6 @@
 
     $('stockBg').classList.add('active');
 
-    // Автофокус с выделением
     setTimeout(function () {
       input.focus();
       input.select();
@@ -1314,7 +1415,6 @@
     var delta = current - act;
     var newWaste = Math.max(0, waste + delta);
 
-    // Если операций нет — обнуляем всё
     if (sys === 0) newWaste = 0;
 
     var meta = { waste: newWaste };
@@ -1347,7 +1447,6 @@
     db.ref(BASE + '/transactions').on('value', function (snap) {
       var data = snap.val() || {};
       transactions = Object.keys(data).map(function (k) { return data[k]; });
-      // Если все операции удалены — чистим брак в stockMeta
       if (!transactions.length && (stockMeta.waste || 0) > 0) {
         db.ref(BASE + '/stockMeta').set({ waste: 0 }).catch(function () {});
         stockMeta = { waste: 0 };
@@ -1383,12 +1482,11 @@
 
     $('saveBuyBtn').addEventListener('click', saveBuy);
     $('cancelBuyBtn').addEventListener('click', function () { closeModal('buyBg'); });
-    $('buyWeightInput').addEventListener('input', updateBuyHint);
-    $('buyAmountInput').addEventListener('input', updateBuyHint);
+    $('addCustomBuyLine').addEventListener('click', addCustomBuyRow);
 
     $('saveSellBtn').addEventListener('click', saveSell);
     $('cancelSellBtn').addEventListener('click', function () { closeModal('sellBg'); });
-    $('addCustomLine').addEventListener('click', addCustomSellRow);
+    $('addCustomSellLine').addEventListener('click', addCustomSellRow);
 
     $('closeTmplBtn').addEventListener('click', function () { closeModal('tmplBg'); });
     $('addBuyTmplBtn').addEventListener('click', addBuyTemplate);
