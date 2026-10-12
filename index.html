@@ -38,7 +38,6 @@
 
   .app-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px 140px; overscroll-behavior: contain; }
 
-  /* Balance */
   .balance-card { background: linear-gradient(135deg, #1f1f28, #18181f); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 12px; position: relative; overflow: hidden; }
   .balance-card::after { content: ''; position: absolute; top: -50%; right: -30%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(94,92,230,0.15), transparent 70%); pointer-events: none; }
   .balance-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
@@ -46,7 +45,7 @@
   .balance-value.neg { color: var(--red); }
   .balance-value.pos { color: var(--green); }
 
-  /* Stock summary (только пластик) */
+  /* Stock */
   .stock-summary {
     background: linear-gradient(135deg, rgba(100,210,255,0.08), rgba(100,210,255,0.02));
     border: 1px solid rgba(100,210,255,0.2); border-radius: 16px;
@@ -79,7 +78,6 @@
   .dot.r { background: var(--red); }
   .stat-value { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
 
-  /* Chart */
   .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
   .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
   .chart-subtitle { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
@@ -94,15 +92,13 @@
   .section-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin: 4px 4px 10px; display: flex; justify-content: space-between; align-items: center; }
   .section-title button { background: none; border: none; color: var(--accent); font-size: 12px; font-family: inherit; cursor: pointer; text-transform: none; letter-spacing: 0; }
 
-  /* Transactions */
   .tx-list { display: flex; flex-direction: column; gap: 6px; }
   .tx-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; animation: slideIn 0.2s ease; }
   @keyframes slideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
   .tx-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
   .tx-note { font-size: 14px; font-weight: 500; }
   .tx-date { font-size: 11px; color: var(--muted); }
-  .tx-pos { font-size: 11px; color: var(--cyan); font-variant-numeric: tabular-nums; }
-  .tx-pos.muted { color: var(--muted); }
+  .tx-pos { font-size: 11px; color: var(--cyan); font-variant-numeric: tabular-nums; line-height: 1.5; }
   .tx-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .tx-amount-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
   .tx-amount { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -152,61 +148,69 @@
   .btn-save.income { background: var(--green); }
   .btn-save.expense { background: var(--red); }
 
-  /* Multi-row modal (Продал) */
-  .multi-row {
+  /* Продажа: строки по шаблонам */
+  .sell-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .sell-row {
     display: grid;
-    grid-template-columns: 1fr 70px 90px 32px;
+    grid-template-columns: 1fr 64px 84px;
     gap: 6px;
     align-items: center;
-    margin-bottom: 8px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.2s;
   }
-  .multi-row input {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 10px; padding: 10px 8px;
+  .sell-row.active {
+    border-color: var(--accent);
+    background: rgba(94,92,230,0.06);
+  }
+  .sell-row input {
+    background: transparent; border: none;
     font-size: 14px; color: var(--text); font-family: inherit;
     outline: none; min-width: 0; width: 100%;
+    padding: 2px 0;
   }
-  .multi-row input:focus { border-color: var(--accent); }
-  .multi-row input[type="number"] { text-align: right; font-variant-numeric: tabular-nums; }
-  .multi-row .row-del {
-    background: none; border: none; color: var(--muted);
-    font-size: 20px; cursor: pointer; padding: 0; line-height: 1;
+  .sell-row input.row-name { font-weight: 500; }
+  .sell-row input.row-qty,
+  .sell-row input.row-price {
+    text-align: right; font-variant-numeric: tabular-nums;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px; padding: 4px 6px;
   }
-  .multi-row .row-del:active { color: var(--red); }
+  .sell-row input.row-qty::placeholder,
+  .sell-row input.row-price::placeholder { color: var(--muted); opacity: 0.5; }
+  .sell-row input.row-qty:focus,
+  .sell-row input.row-price:focus { background: rgba(94,92,230,0.15); }
+  .sell-row input::placeholder { color: var(--muted); }
+
   .multi-header {
     display: grid;
-    grid-template-columns: 1fr 70px 90px 32px;
+    grid-template-columns: 1fr 64px 84px;
     gap: 6px;
     font-size: 10px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 0 2px;
+    padding: 0 14px;
     margin-bottom: 6px;
   }
   .multi-header span:nth-child(2),
   .multi-header span:nth-child(3) { text-align: right; }
-  .add-row-btn {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 12px;
-    background: transparent;
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-    color: var(--accent);
-    font-size: 13px;
-    font-family: inherit;
-    cursor: pointer;
+
+  .sell-empty {
+    text-align: center; color: var(--muted); font-size: 13px;
+    padding: 20px;
   }
-  .add-row-btn:active { background: var(--bg); }
+
   .multi-total {
     display: flex; justify-content: space-between;
     font-size: 13px; color: var(--muted);
-    padding: 8px 4px 12px;
+    padding: 10px 4px 12px;
     border-top: 1px solid var(--border);
     margin-top: 4px;
   }
-  .multi-total b { color: var(--green); font-variant-numeric: tabular-nums; }
+  .multi-total b { color: var(--green); font-variant-numeric: tabular-nums; font-size: 16px; }
 
   /* Templates editor */
   .tmpl-section-title {
@@ -214,18 +218,53 @@
     text-transform: uppercase; letter-spacing: 0.8px;
     margin: 12px 4px 8px;
   }
-  .tmpl-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; max-height: 180px; overflow-y: auto; }
-  .tmpl-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
-  .tmpl-info { display: flex; flex-direction: column; gap: 2px; }
+  .tmpl-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; max-height: 240px; overflow-y: auto; }
+  .tmpl-item {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; padding: 10px 12px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .tmpl-item.buy .tmpl-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .tmpl-item.sell { display: grid; grid-template-columns: 1fr 84px 28px; gap: 8px; }
+  .tmpl-item.sell .tmpl-name-input {
+    background: transparent; border: none;
+    font-size: 14px; font-weight: 500; color: var(--text);
+    font-family: inherit; outline: none; min-width: 0; width: 100%;
+    padding: 2px 0;
+  }
+  .tmpl-item.sell .tmpl-price-input {
+    background: rgba(255,255,255,0.03);
+    border: none; border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 13px; color: var(--text);
+    font-family: inherit; outline: none;
+    text-align: right; font-variant-numeric: tabular-nums;
+    width: 100%;
+  }
+  .tmpl-item.sell .tmpl-price-input:focus,
+  .tmpl-item.sell .tmpl-name-input:focus { background: rgba(94,92,230,0.15); }
+  .tmpl-item.sell .tmpl-price-wrap {
+    position: relative;
+  }
+  .tmpl-item.sell .tmpl-price-wrap::after {
+    content: '₽';
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    font-size: 11px; color: var(--muted);
+    pointer-events: none;
+  }
+  .tmpl-item.sell .tmpl-price-input { padding-right: 18px; }
   .tmpl-name { font-size: 14px; font-weight: 500; }
   .tmpl-unit { font-size: 11px; color: var(--muted); }
-  .tmpl-del { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 4px; }
+  .tmpl-del { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1; }
   .tmpl-del:active { color: var(--red); }
-  .tmpl-add-row { display: flex; gap: 6px; margin-bottom: 8px; }
-  .tmpl-add-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; }
+  .tmpl-add-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
+  .tmpl-add-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; min-width: 0; }
   .tmpl-add-row input:focus { border-color: var(--accent); }
   .tmpl-add-row select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; }
-  .tmpl-add-row button { background: var(--accent); border: none; border-radius: 10px; padding: 0 16px; color: white; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .tmpl-add-row button { background: var(--accent); border: none; border-radius: 10px; padding: 10px 16px; color: white; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .tmpl-add-row .price-input-wrap { position: relative; width: 90px; flex: 0 0 auto; }
+  .tmpl-add-row .price-input-wrap input { padding-right: 22px; text-align: right; }
+  .tmpl-add-row .price-input-wrap::after { content: '₽'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); pointer-events: none; }
 
   /* Stock editor */
   .stock-edit-row { display: flex; align-items: center; gap: 10px; padding: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; }
@@ -236,12 +275,25 @@
   .stock-edit-row .diff { font-size: 11px; color: var(--warn); min-width: 50px; text-align: right; }
 
   .stock-help {
-    font-size: 11px; color: var(--muted);
-    line-height: 1.5; padding: 10px 12px;
+    font-size: 12px; color: var(--muted);
+    line-height: 1.5; padding: 12px;
     background: rgba(100,210,255,0.05);
+    border: 1px solid rgba(100,210,255,0.1);
     border-radius: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
+  .stock-help b { color: var(--warn); }
+  .stock-info-block {
+    padding: 12px 14px;
+    background: rgba(255,159,10,0.05);
+    border: 1px solid rgba(255,159,10,0.15);
+    border-radius: 10px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .stock-info-block .num { color: var(--warn); font-weight: 600; font-variant-numeric: tabular-nums; }
 
   .toast { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 90px); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 300; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -284,7 +336,7 @@
       <div class="stock-plastic-value" id="stockPlastic">0 кг</div>
       <div class="stock-waste-line">
         <span>🗑 Брак / отходы:</span>
-        <span class="waste-val" id="stockWaste">0 кг</span>
+        <span class="waste-val" id="stockWaste">—</span>
       </div>
     </div>
 
@@ -356,27 +408,18 @@
   </div>
 </div>
 
-<!-- MODAL: Продал (мультистрочный) -->
+<!-- MODAL: Продал -->
 <div class="modal-bg" id="sellBg">
   <div class="modal">
     <div class="modal-handle"></div>
     <h2>Продал</h2>
 
-    <div class="field-label">
-      <span>Позиции</span>
-      <button type="button" id="quickFillSell" style="background:none;border:none;color:var(--accent);font-size:11px;cursor:pointer;padding:0;">шаблоны ↓</button>
-    </div>
-    <div class="quick-templates" id="sellTemplates"></div>
-
     <div class="multi-header">
       <span>Название</span>
       <span>Кол-во</span>
       <span>Цена ₽</span>
-      <span></span>
     </div>
-    <div id="sellRows"></div>
-
-    <button class="add-row-btn" id="addSellRow">+ Добавить позицию</button>
+    <div class="sell-rows" id="sellRows"></div>
 
     <div class="multi-total">
       <span>Итого:</span>
@@ -408,10 +451,13 @@
       <button id="addBuyTmplBtn">+</button>
     </div>
 
-    <div class="tmpl-section-title">🛍 Для «Продал» (товары)</div>
+    <div class="tmpl-section-title">🛍 Для «Продал» (товары + цена)</div>
     <div class="tmpl-list" id="sellTmplList"></div>
     <div class="tmpl-add-row">
       <input type="text" id="newSellTmplName" placeholder="Название" autocomplete="off" />
+      <div class="price-input-wrap">
+        <input type="number" id="newSellTmplPrice" placeholder="0" inputmode="decimal" step="0.01" />
+      </div>
       <button id="addSellTmplBtn">+</button>
     </div>
 
@@ -421,28 +467,26 @@
   </div>
 </div>
 
-<!-- MODAL: Stock (только пластик) -->
+<!-- MODAL: Stock -->
 <div class="modal-bg" id="stockBg">
   <div class="modal">
     <div class="modal-handle"></div>
     <h2>Пластик на складе</h2>
 
     <div class="stock-help">
-      Укажи фактическое количество пластика на складе.<br>
-      Разница с системным уйдёт в <b style="color:var(--warn)">брак / отходы</b> и будет показана отдельно.
+      Введи <b>фактическое</b> количество пластика, которое есть сейчас. Разница с системным автоматически уйдёт в <b>брак / отходы</b>.
     </div>
 
     <div class="stock-edit-row">
-      <div class="name">Пластик</div>
+      <div class="name">Пластик фактически</div>
       <div class="diff" id="stockDiff"></div>
       <input type="number" step="0.01" inputmode="decimal" id="stockInput" value="0" />
       <span class="unit">кг</span>
     </div>
 
-    <div class="stock-edit-row" style="background:rgba(255,159,10,0.05);border-color:rgba(255,159,10,0.2);">
-      <div class="name" style="color:var(--warn)">🗑 Брак / отходы (накоплено)</div>
-      <input type="number" step="0.01" inputmode="decimal" id="wasteInput" value="0" />
-      <span class="unit">кг</span>
+    <div class="stock-info-block">
+      Системный склад: <span class="num" id="sysStockView">0 кг</span><br>
+      Будет учтено как брак: <span class="num" id="wasteDeltaView">0 кг</span>
     </div>
 
     <div class="modal-actions">
@@ -461,7 +505,6 @@
 (function () {
   'use strict';
 
-  /* ============ Config ============ */
   var firebaseConfig = {
     apiKey: "AIzaSyB2PbWgKz8mX8MWO3G1FuW-YDZYYnJF0W8",
     authDomain: "finance-22756.firebaseapp.com",
@@ -474,18 +517,16 @@
 
   var PROFILE = 'Aynaz';
   var BASE = 'users/' + PROFILE;
-  var LS_BUY_TMPL = 'uchet_buy_templates';
-  var LS_SELL_TMPL = 'uchet_sell_templates';
+  var LS_BUY_TMPL = 'uchet_buy_templates_v4';
+  var LS_SELL_TMPL = 'uchet_sell_templates_v4';
 
-  /* ============ State ============ */
   var db = null;
-  var transactions = [];      // все операции
-  var stockMeta = {           // { plasticStock, waste }
-    plasticStock: null,
-    waste: 0
-  };
+  var transactions = [];
+  // stock: { plasticManual: number|null, waste: number }
+  var stockMeta = { plasticManual: null, waste: 0 };
+
   var buyTemplates = [];
-  var sellTemplates = [];
+  var sellTemplates = [];  // { id, name, price }
   var selectedBuyTmpl = null;
 
   var DEFAULT_BUY_TMPL = [
@@ -496,10 +537,10 @@
   ];
 
   var DEFAULT_SELL_TMPL = [
-    { id: 's_magnit',  name: 'Магнитик' },
-    { id: 's_kachalka', name: 'Качалка' },
-    { id: 's_podstavka', name: 'Подставка для канцелярии' },
-    { id: 's_other',   name: 'Другое' }
+    { id: 's_magnit',    name: 'Магнитик',   price: 100 },
+    { id: 's_kachalka',  name: 'Качалка',    price: 500 },
+    { id: 's_podstavka', name: 'Подставка для канцелярии', price: 350 },
+    { id: 's_other',     name: 'Другое',     price: 0 }
   ];
 
   /* ============ Helpers ============ */
@@ -509,13 +550,11 @@
     var abs = Math.abs(n);
     return abs.toLocaleString('ru-RU', { maximumFractionDigits: 0 }) + ' ₽';
   }
-
   function fmtWeight(n) {
     var abs = Math.abs(n);
     if (abs >= 1000) return (abs / 1000).toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' т';
     return abs.toLocaleString('ru-RU', { maximumFractionDigits: 1 }) + ' кг';
   }
-
   function fmtAmount(n, unit) {
     var abs = Math.abs(n);
     if (unit === 'г') {
@@ -525,18 +564,12 @@
     if (unit === 'кг') return abs.toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' кг';
     return abs.toLocaleString('ru-RU', { maximumFractionDigits: 0 }) + ' шт';
   }
-
-  function todayKey(d) {
-    d = d || new Date();
-    return d.toISOString().slice(0, 10);
-  }
-
+  function todayKey(d) { d = d || new Date(); return d.toISOString().slice(0, 10); }
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function(c) {
       return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
     });
   }
-
   function toast(msg, type) {
     var el = $('toast');
     el.textContent = msg;
@@ -544,15 +577,14 @@
     clearTimeout(el._t);
     el._t = setTimeout(function () { el.className = 'toast ' + (type || ''); }, 2200);
   }
-
   function setSync(state, text) {
     $('syncDot').className = 'sync-dot ' + state;
     $('syncText').textContent = text;
   }
-
   function uid() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   }
+  function closeModal(id) { $(id).classList.remove('active'); }
 
   /* ============ Templates ============ */
   function loadTemplates() {
@@ -570,7 +602,6 @@
 
     saveTemplates();
   }
-
   function saveTemplates() {
     try { localStorage.setItem(LS_BUY_TMPL, JSON.stringify(buyTemplates)); } catch (e) {}
     try { localStorage.setItem(LS_SELL_TMPL, JSON.stringify(sellTemplates)); } catch (e) {}
@@ -584,17 +615,19 @@
     saveTemplates();
     $('newBuyTmplName').value = '';
     renderTemplatesEditor();
-    toast('Шаблон добавлен', 'ok');
+    toast('Добавлено', 'ok');
   }
 
   function addSellTemplate() {
     var name = $('newSellTmplName').value.trim();
+    var price = parseFloat($('newSellTmplPrice').value.replace(',', '.')) || 0;
     if (!name) { toast('Введите название', 'err'); return; }
-    sellTemplates.push({ id: 's_' + uid(), name: name });
+    sellTemplates.push({ id: 's_' + uid(), name: name, price: price });
     saveTemplates();
     $('newSellTmplName').value = '';
+    $('newSellTmplPrice').value = '';
     renderTemplatesEditor();
-    toast('Шаблон добавлен', 'ok');
+    toast('Добавлено', 'ok');
   }
 
   function deleteBuyTemplate(id) {
@@ -602,20 +635,28 @@
     saveTemplates();
     renderTemplatesEditor();
   }
-
   function deleteSellTemplate(id) {
     sellTemplates = sellTemplates.filter(function (t) { return t.id !== id; });
     saveTemplates();
     renderTemplatesEditor();
   }
 
-  /* ============ Plastic stock ============ */
-  // Только для пластика: купил += кг, брак вычитается (вручную)
-  function getPlasticStock() {
-    if (stockMeta.plasticStock !== null && stockMeta.plasticStock !== undefined) {
-      return stockMeta.plasticStock;
+  function updateSellTemplate(id, field, value) {
+    for (var i = 0; i < sellTemplates.length; i++) {
+      if (sellTemplates[i].id === id) {
+        if (field === 'name') sellTemplates[i].name = value;
+        else if (field === 'price') sellTemplates[i].price = parseFloat(value.replace(',', '.')) || 0;
+        break;
+      }
     }
-    // Автоматически: считаем из операций покупки «Пластик» в кг
+    saveTemplates();
+  }
+
+  /* ============ Plastic stock (auto) ============ */
+  // Системный склад = куплено пластика − продано пластика (не бывает продаж пластика, только товары)
+  // Пластик тратится на производство, но физически он на складе, пока не продан как изделие.
+  // Считаем: всё купленное = на складе. Брак вычитается вручную.
+  function getSystemPlasticStock() {
     var total = 0;
     transactions.forEach(function (t) {
       if (t.type === 'buy' && t.templateId === 'b_plastic' && t.unit === 'кг') {
@@ -623,6 +664,13 @@
       }
     });
     return total;
+  }
+
+  // Текущий склад = системный − брак всего
+  function getCurrentPlasticStock() {
+    var sys = getSystemPlasticStock();
+    var waste = stockMeta.waste || 0;
+    return sys - waste;
   }
 
   function getWaste() {
@@ -667,9 +715,7 @@
       return { date: k, cumI: cumI, cumE: cumE };
     });
 
-    if (points.length === 1) {
-      points.unshift({ date: days[0], cumI: 0, cumE: 0 });
-    }
+    if (points.length === 1) points.unshift({ date: days[0], cumI: 0, cumE: 0 });
 
     var W = 320, H = 150;
     var padL = 8, padR = 8, padT = 12, padB = 22;
@@ -729,13 +775,11 @@
     $('totalIncome').textContent = fmtMoney(totalIncome);
     $('totalExpense').textContent = fmtMoney(totalExpense);
 
-    // Пластик на складе
-    var plastic = getPlasticStock();
+    var plastic = getCurrentPlasticStock();
     var plasticEl = $('stockPlastic');
     plasticEl.textContent = (plastic < 0 ? '−' : '') + fmtWeight(plastic);
     plasticEl.className = 'stock-plastic-value' + (plastic < 0 ? ' neg' : '');
 
-    // Брак
     var waste = getWaste();
     var wasteEl = $('stockWaste');
     wasteEl.textContent = waste > 0 ? fmtWeight(waste) : '—';
@@ -790,14 +834,12 @@
   /* ============ Modal: Купил ============ */
   function openBuyModal() {
     selectedBuyTmpl = null;
-
     $('buyNoteInput').value = '';
     $('buyWeightInput').value = '';
     $('buyAmountInput').value = '';
     $('buyWeightUnit').textContent = 'кг';
     $('buyCustomNameWrap').style.display = 'none';
     $('buyHint').innerHTML = '';
-
     renderBuyTemplates();
     $('buyBg').classList.add('active');
   }
@@ -874,15 +916,10 @@
     }
 
     var tx = {
-      id: uid(),
-      type: 'buy',
-      templateId: tmplId,
-      templateName: tmplName,
-      unit: unit,
-      amount_qty: q,
-      sum: s,
-      date: todayKey(),
-      createdAt: Date.now()
+      id: uid(), type: 'buy',
+      templateId: tmplId, templateName: tmplName, unit: unit,
+      amount_qty: q, sum: s,
+      date: todayKey(), createdAt: Date.now()
     };
 
     setSync('sync', 'отправка…');
@@ -899,81 +936,45 @@
       });
   }
 
-  /* ============ Modal: Продал ============ */
-  var sellRowCounter = 0;
-
+  /* ============ Modal: Продал — строки по шаблонам ============ */
   function openSellModal() {
-    $('sellRows').innerHTML = '';
-    sellRowCounter = 0;
-    addSellRow(); // одна пустая строка по умолчанию
-    renderSellTemplates();
-    updateSellTotal();
+    renderSellRows();
     $('sellBg').classList.add('active');
   }
 
-  function addSellRow(name, qty, price) {
-    sellRowCounter++;
-    var id = 'sellrow_' + sellRowCounter;
-    var row = document.createElement('div');
-    row.className = 'multi-row';
-    row.dataset.rowId = id;
-    row.innerHTML =
-      '<input type="text" class="row-name" placeholder="Название" value="' + (name ? escapeHtml(name) : '') + '" />' +
-      '<input type="number" class="row-qty" placeholder="1" inputmode="decimal" step="1" value="' + (qty || '') + '" />' +
-      '<input type="number" class="row-price" placeholder="0" inputmode="decimal" step="0.01" value="' + (price || '') + '" />' +
-      '<button type="button" class="row-del">×</button>';
+  // Рендерим строки: по одной на каждый шаблон
+  function renderSellRows() {
+    var c = $('sellRows');
+    if (!sellTemplates.length) {
+      c.innerHTML = '<div class="sell-empty">Нет шаблонов товаров.<br>Добавь их в ⚙️ Шаблоны.</div>';
+      $('sellTotal').textContent = '0 ₽';
+      return;
+    }
 
-    row.querySelector('.row-del').addEventListener('click', function () {
-      // Оставляем хотя бы одну строку
-      if (document.querySelectorAll('#sellRows .multi-row').length > 1) {
-        row.remove();
-        updateSellTotal();
-      } else {
-        row.querySelector('.row-name').value = '';
-        row.querySelector('.row-qty').value = '';
-        row.querySelector('.row-price').value = '';
-        updateSellTotal();
-      }
-    });
-
-    row.querySelector('.row-qty').addEventListener('input', updateSellTotal);
-    row.querySelector('.row-price').addEventListener('input', updateSellTotal);
-
-    $('sellRows').appendChild(row);
-    return row;
-  }
-
-  function renderSellTemplates() {
-    var c = $('sellTemplates');
-    var html = '';
+    c.innerHTML = '';
     for (var i = 0; i < sellTemplates.length; i++) {
-      html += '<button class="qt-btn" data-name="' + escapeHtml(sellTemplates[i].name) + '">' + escapeHtml(sellTemplates[i].name) + '</button>';
-    }
-    c.innerHTML = html;
+      var t = sellTemplates[i];
+      var row = document.createElement('div');
+      row.className = 'sell-row';
+      row.dataset.tmplId = t.id;
+      row.innerHTML =
+        '<input type="text" class="row-name" value="' + escapeHtml(t.name) + '" data-field="name" />' +
+        '<input type="number" class="row-qty" placeholder="0" inputmode="decimal" step="1" min="0" data-field="qty" />' +
+        '<input type="number" class="row-price" placeholder="0" inputmode="decimal" step="0.01" min="0" value="' + (t.price ? t.price : '') + '" data-field="price" />';
 
-    var btns = c.querySelectorAll('.qt-btn');
-    for (var j = 0; j < btns.length; j++) {
-      btns[j].addEventListener('click', function () {
-        // Если последняя строка пустая — заполняем её, иначе создаём новую
-        var rows = document.querySelectorAll('#sellRows .multi-row');
-        var target = null;
-        for (var k = rows.length - 1; k >= 0; k--) {
-          var nm = rows[k].querySelector('.row-name').value.trim();
-          var qt = rows[k].querySelector('.row-qty').value.trim();
-          var pr = rows[k].querySelector('.row-price').value.trim();
-          if (!nm && !qt && !pr) { target = rows[k]; break; }
-        }
-        if (!target) target = addSellRow();
-        target.querySelector('.row-name').value = this.dataset.name;
-        target.querySelector('.row-qty').focus();
-        updateSellTotal();
-      });
+      var qtyInp = row.querySelector('.row-qty');
+      var priceInp = row.querySelector('.row-price');
+      qtyInp.addEventListener('input', updateSellTotal);
+      priceInp.addEventListener('input', updateSellTotal);
+
+      c.appendChild(row);
     }
+    updateSellTotal();
   }
 
   function updateSellTotal() {
     var total = 0;
-    var rows = document.querySelectorAll('#sellRows .multi-row');
+    var rows = document.querySelectorAll('#sellRows .sell-row');
     for (var i = 0; i < rows.length; i++) {
       var q = parseFloat(rows[i].querySelector('.row-qty').value.replace(',', '.')) || 0;
       var p = parseFloat(rows[i].querySelector('.row-price').value.replace(',', '.')) || 0;
@@ -983,7 +984,7 @@
   }
 
   function saveSell() {
-    var rows = document.querySelectorAll('#sellRows .multi-row');
+    var rows = document.querySelectorAll('#sellRows .sell-row');
     var items = [];
     var total = 0;
 
@@ -991,23 +992,19 @@
       var name = rows[i].querySelector('.row-name').value.trim();
       var q = parseFloat(rows[i].querySelector('.row-qty').value.replace(',', '.')) || 0;
       var p = parseFloat(rows[i].querySelector('.row-price').value.replace(',', '.')) || 0;
-      if (!name && !q && !p) continue;
-      if (!name) { toast('Заполни название в строке ' + (i + 1), 'err'); return; }
-      if (q <= 0) { toast('Кол-во в строке ' + (i + 1), 'err'); return; }
-      if (p <= 0) { toast('Цена в строке ' + (i + 1), 'err'); return; }
+      if (q <= 0) continue; // пропускаем незаполненные
+      if (!name) { toast('Нужно название', 'err'); return; }
+      if (p <= 0) { toast('Нужна цена у «' + name + '»', 'err'); return; }
       items.push({ name: name, qty: q, price: p, subtotal: q * p });
       total += q * p;
     }
 
-    if (!items.length) { toast('Добавь хотя бы одну позицию', 'err'); return; }
+    if (!items.length) { toast('Заполни хотя бы одну позицию', 'err'); return; }
 
     var tx = {
-      id: uid(),
-      type: 'sell',
-      items: items,
-      sum: total,
-      date: todayKey(),
-      createdAt: Date.now()
+      id: uid(), type: 'sell',
+      items: items, sum: total,
+      date: todayKey(), createdAt: Date.now()
     };
 
     setSync('sync', 'отправка…');
@@ -1031,34 +1028,59 @@
   }
 
   function renderTemplatesEditor() {
-    // Покупка
+    // BUY: имя + единица
     var cB = $('buyTmplList');
-    if (!buyTemplates.length) cB.innerHTML = '<div class="empty" style="padding:10px;font-size:12px">Нет шаблонов</div>';
-    else {
+    if (!buyTemplates.length) {
+      cB.innerHTML = '<div class="empty" style="padding:10px;font-size:12px">Нет шаблонов</div>';
+    } else {
       cB.innerHTML = buyTemplates.map(function (t) {
-        return '<div class="tmpl-item">' +
-          '<div class="tmpl-info"><div class="tmpl-name">' + escapeHtml(t.name) + '</div><div class="tmpl-unit">' + t.unit + '</div></div>' +
+        return '<div class="tmpl-item buy">' +
+          '<div class="tmpl-info">' +
+            '<div class="tmpl-name">' + escapeHtml(t.name) + '</div>' +
+            '<div class="tmpl-unit">' + t.unit + '</div>' +
+          '</div>' +
           '<button class="tmpl-del" data-kind="buy" data-id="' + t.id + '">×</button>' +
         '</div>';
       }).join('');
     }
 
-    // Продажа
+    // SELL: имя (редактируемое) + цена (редактируемая)
     var cS = $('sellTmplList');
-    if (!sellTemplates.length) cS.innerHTML = '<div class="empty" style="padding:10px;font-size:12px">Нет шаблонов</div>';
-    else {
+    if (!sellTemplates.length) {
+      cS.innerHTML = '<div class="empty" style="padding:10px;font-size:12px">Нет шаблонов</div>';
+    } else {
       cS.innerHTML = sellTemplates.map(function (t) {
-        return '<div class="tmpl-item">' +
-          '<div class="tmpl-info"><div class="tmpl-name">' + escapeHtml(t.name) + '</div></div>' +
+        return '<div class="tmpl-item sell" data-id="' + t.id + '">' +
+          '<input type="text" class="tmpl-name-input" value="' + escapeHtml(t.name) + '" data-field="name" />' +
+          '<div class="tmpl-price-wrap">' +
+            '<input type="number" class="tmpl-price-input" value="' + (t.price || 0) + '" inputmode="decimal" step="0.01" data-field="price" />' +
+          '</div>' +
           '<button class="tmpl-del" data-kind="sell" data-id="' + t.id + '">×</button>' +
         '</div>';
       }).join('');
+
+      // привязка input-ов sell
+      var items = cS.querySelectorAll('.tmpl-item.sell');
+      for (var i = 0; i < items.length; i++) {
+        (function (item) {
+          var id = item.dataset.id;
+          var nameInp = item.querySelector('.tmpl-name-input');
+          var priceInp = item.querySelector('.tmpl-price-input');
+
+          nameInp.addEventListener('input', function () {
+            updateSellTemplate(id, 'name', this.value);
+          });
+          priceInp.addEventListener('input', function () {
+            updateSellTemplate(id, 'price', this.value);
+          });
+        })(items[i]);
+      }
     }
 
-    // Обработчики удаления
+    // Удаление
     var dels = document.querySelectorAll('#buyTmplList .tmpl-del, #sellTmplList .tmpl-del');
-    for (var i = 0; i < dels.length; i++) {
-      dels[i].addEventListener('click', function () {
+    for (var k = 0; k < dels.length; k++) {
+      dels[k].addEventListener('click', function () {
         if (this.dataset.kind === 'buy') deleteBuyTemplate(this.dataset.id);
         else deleteSellTemplate(this.dataset.id);
       });
@@ -1067,36 +1089,58 @@
 
   /* ============ Stock editor ============ */
   function openStockEditor() {
-    var sysStock = getPlasticStock();
-    $('stockInput').value = sysStock;
-    $('wasteInput').value = getWaste();
+    var sys = getSystemPlasticStock();
+    var waste = getWaste();
+    var current = sys - waste;
+
+    $('stockInput').value = current.toFixed(1);
+    $('sysStockView').textContent = fmtWeight(sys);
     $('stockDiff').textContent = '';
+    $('wasteDeltaView').textContent = '0 кг';
 
     $('stockInput').oninput = function () {
       var act = parseFloat(this.value.replace(',', '.')) || 0;
-      var delta = act - sysStock;
+      var newWasteDelta = current - act;      // сколько уйдёт в брак
+      var newWasteTotal = waste + newWasteDelta;
+
       var el = $('stockDiff');
-      if (Math.abs(delta) > 0.001) el.textContent = (delta > 0 ? '+' : '') + delta.toFixed(1);
-      else el.textContent = '';
+      if (Math.abs(newWasteDelta) > 0.001) {
+        el.textContent = (newWasteDelta > 0 ? '−' : '+') + Math.abs(newWasteDelta).toFixed(1);
+      } else {
+        el.textContent = '';
+      }
+
+      $('wasteDeltaView').textContent =
+        (newWasteDelta > 0 ? '+' : newWasteDelta < 0 ? '−' : '') + fmtWeight(Math.abs(newWasteDelta));
     };
 
     $('stockBg').classList.add('active');
   }
 
   function applyStockEdit() {
-    var plastic = parseFloat($('stockInput').value.replace(',', '.'));
-    var waste = parseFloat($('wasteInput').value.replace(',', '.'));
-    if (isNaN(plastic)) plastic = 0;
-    if (isNaN(waste)) waste = 0;
+    var sys = getSystemPlasticStock();
+    var waste = getWaste();
+    var current = sys - waste;
+    var act = parseFloat($('stockInput').value.replace(',', '.'));
+    if (isNaN(act)) act = current;
 
-    var meta = { plasticStock: plastic, waste: waste };
+    // Разница уходит в брак (положительная) или списывается (отрицательная)
+    var delta = current - act;
+    var newWaste = Math.max(0, waste + delta);
+
+    var meta = { plasticManual: null, waste: newWaste };
 
     setSync('sync', 'отправка…');
     db.ref(BASE + '/stockMeta').set(meta)
       .then(function () {
         stockMeta = meta;
         setSync('ok', 'синхронизировано');
-        toast('Склад обновлён', 'ok');
+        var msg = delta > 0
+          ? 'В брак: +' + fmtWeight(delta)
+          : delta < 0
+            ? 'Уменьшено на ' + fmtWeight(-delta)
+            : 'Без изменений';
+        toast(msg, 'ok');
         render();
         closeModal('stockBg');
       })
@@ -1122,7 +1166,8 @@
     });
 
     db.ref(BASE + '/stockMeta').on('value', function (snap) {
-      stockMeta = snap.val() || { plasticStock: null, waste: 0 };
+      stockMeta = snap.val() || { plasticManual: null, waste: 0 };
+      if (typeof stockMeta.waste !== 'number') stockMeta.waste = 0;
       render();
     });
   }
@@ -1134,8 +1179,6 @@
       .catch(function () { toast('Ошибка удаления', 'err'); });
   }
 
-  function closeModal(id) { $(id).classList.remove('active'); }
-
   /* ============ Bind ============ */
   function bindEvents() {
     $('btnBuy').addEventListener('click', openBuyModal);
@@ -1143,27 +1186,21 @@
     $('stockSummary').addEventListener('click', openStockEditor);
     $('openTmplBtn').addEventListener('click', openTemplates);
 
-    // Купил
     $('saveBuyBtn').addEventListener('click', saveBuy);
     $('cancelBuyBtn').addEventListener('click', function () { closeModal('buyBg'); });
     $('buyWeightInput').addEventListener('input', updateBuyHint);
     $('buyAmountInput').addEventListener('input', updateBuyHint);
 
-    // Продал
     $('saveSellBtn').addEventListener('click', saveSell);
     $('cancelSellBtn').addEventListener('click', function () { closeModal('sellBg'); });
-    $('addSellRow').addEventListener('click', function () { addSellRow(); });
 
-    // Шаблоны
     $('closeTmplBtn').addEventListener('click', function () { closeModal('tmplBg'); });
     $('addBuyTmplBtn').addEventListener('click', addBuyTemplate);
     $('addSellTmplBtn').addEventListener('click', addSellTemplate);
 
-    // Склад
     $('cancelStockBtn').addEventListener('click', function () { closeModal('stockBg'); });
     $('applyStockBtn').addEventListener('click', applyStockEdit);
 
-    // Закрытие по фону
     ['buyBg', 'sellBg', 'tmplBg', 'stockBg'].forEach(function (id) {
       $(id).addEventListener('click', function (e) {
         if (e.target === this) closeModal(id);
@@ -1174,10 +1211,9 @@
   /* ============ Init ============ */
   function init() {
     loadTemplates();
-
     try {
       if (typeof firebase === 'undefined') {
-        $('loading').innerHTML = '<div style="color:#ff7b72;padding:20px;text-align:center">Firebase SDK не загрузился.<br>Проверь интернет.</div>';
+        $('loading').innerHTML = '<div style="color:#ff7b72;padding:20px;text-align:center">Firebase SDK не загрузился.</div>';
         return;
       }
       firebase.initializeApp(firebaseConfig);
@@ -1187,9 +1223,7 @@
       $('loading').innerHTML = '<div style="color:#ff7b72;padding:20px;text-align:center">Ошибка Firebase: ' + e.message + '</div>';
       return;
     }
-
     $('loading').classList.add('hidden');
-
     bindEvents();
     subscribeFirebase();
   }
